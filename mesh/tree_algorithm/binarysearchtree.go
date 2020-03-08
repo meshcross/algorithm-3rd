@@ -13,15 +13,15 @@
 				为了避免出现这样的情况，一般需要在二叉搜索树中加入平衡算法，以让树左右平衡
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:20:21
- * @LastEditTime: 2020-03-06 16:17:52
+ * @LastEditTime: 2020-03-08 17:24:27
  * @LastEditors:
- */
+*/
 package TreeAlgorithm
 
 import (
 	"errors"
 
-	. "github.com/meshcross/algorithm-3rd/mesh"
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 
 type BinarySearchTree struct {

@@ -5,7 +5,6 @@ import (
 
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
-	// . "github.com/meshcross/algorithm-3rd/mesh/GraphAlgorithm/graph_struct/graph_vertex"
 )
 
 type MatrixSP struct {

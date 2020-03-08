@@ -17,7 +17,7 @@
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-03 17:27:15
- * @LastEditTime: 2020-03-05 11:52:42
+ * @LastEditTime: 2020-03-08 17:24:52
  * @LastEditors:
 */
 
@@ -25,8 +25,6 @@ package TreeAlgorithm
 
 import (
 	"fmt"
-
-	. "github.com/meshcross/algorithm-3rd/mesh"
 
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )

@@ -1,4 +1,4 @@
-/*
+/**
  * @Description: B+树
 
 		B+树是B树的一种变形形式，B+树上的叶子结点存储关键字以及相应记录的地址，叶子结点以上各层作为索引使用。一棵m阶的B+树定义如下:
@@ -20,7 +20,7 @@
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-07 12:45:31
- * @LastEditTime: 2020-03-08 16:45:21
+ * @LastEditTime: 2020-03-08 17:18:40
  * @LastEditors:
 */
 package DataStruct
@@ -29,7 +29,6 @@ import (
 	"errors"
 	"fmt"
 
-	. "github.com/meshcross/algorithm-3rd/mesh"
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 
@@ -147,14 +146,26 @@ func (a *BPlusTreeNode) ChildAt(v int) *BPlusTreeNode {
 	}
 	return nil
 }
+
+/**
+ * @description: child本身为指针类型，进行循环比较复杂度为O(n)，比较浪费，可以借用child的第一个key，在keys中查找，
+			这样可以使用已排好序的keys，用二分查找能提升性能
+
+			前提：该算法实现过程中，严格的保证了子节点的首key跟父节点的keys一一对应
+ * @param {type}
+ * @return:
+*/
 func (a *BPlusTreeNode) ChildIndex(v *BPlusTreeNode) int {
-	for i := 0; i < a._ChildrenSize; i++ {
-		if a._Children[i] == v {
-			return i
-		}
-	}
-	return -1
+	// for i := 0; i < a._ChildrenSize; i++ {
+	// 	if a._Children[i] == v {
+	// 		return i
+	// 	}
+	// }
+	firstKey := v.KeyAt(0)
+	pos := a.KeyIndex(firstKey)
+	return pos + 1
 }
+
 func (a *BPlusTreeNode) GetParent() *BPlusTreeNode {
 	return a._Parent
 }
@@ -184,10 +195,10 @@ func (a *BPlusTreeNode) DataAt(index int) *PairAny {
 }
 
 func (a *BPlusTreeNode) KeyIndex(key interface{}) int {
-
 	for i := 0; i < a._KeySize; i++ {
-		if a._Compare(a._Keys[i], key) == 0 {
-			return i
+		pos := BinarySearchAny(key, a._Keys, a._KeySize, a._Compare)
+		if pos >= 0 {
+			return pos
 		}
 	}
 	return -1
@@ -205,6 +216,7 @@ func (a *BPlusTreeNode) KeyAt(index int) interface{} {
 	}
 	return nil
 }
+
 func (a *BPlusTreeNode) Find(key interface{}) (int, *PairAny) {
 	//不是叶节点，则只能返回下一个查找子节点的下标
 	if !a.IsLeaf() {
@@ -218,31 +230,9 @@ func (a *BPlusTreeNode) Find(key interface{}) (int, *PairAny) {
 		}
 		return i, nil
 	} else {
-		low := 0
-		high := a._KeySize - 1
-		mid := 0
-		for low <= high {
-			mid = (low + high) / 2
-			iKey := a._Keys[mid]
-			if a._Compare(iKey, key) == 0 {
-				break
-			} else if a._Compare(iKey, key) > 0 {
-				high = mid - 1
-			} else {
-				low = mid + 1
-			}
-		}
-
-		// 说明查找成功
-		if low <= high {
-			// index表示元素所在的位置
-			index := mid
-			if a.IsLeaf() {
-				return 0, a._Datas[index]
-			} else {
-				child := a.ChildAt(index)
-				return child.Find(key)
-			}
+		pos := BinarySearchAny(key, a._Keys, a._KeySize, a._Compare)
+		if pos >= 0 {
+			return pos, a._Datas[pos]
 		}
 	}
 	return -1, nil

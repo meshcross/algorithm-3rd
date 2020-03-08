@@ -24,7 +24,6 @@ package SelectAlgorithm
 import (
 	"errors"
 
-	. "github.com/meshcross/algorithm-3rd/mesh"
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 	SortAlgorithm "github.com/meshcross/algorithm-3rd/mesh/sort_algorithm"
 )

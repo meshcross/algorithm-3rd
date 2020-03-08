@@ -1,19 +1,12 @@
 /*
- * @Description: golang algorithm
+ * @Description: 一些回调函数定义
  * @Author: wangchengdg@gmail.com
- * @Date: 2020-02-10 13:26:43
- * @LastEditTime: 2020-03-06 20:07:58
+ * @Date: 2020-03-08 17:08:49
+ * @LastEditTime: 2020-03-08 17:11:05
  * @LastEditors:
  */
-package mesh
 
-import (
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-)
-
-type IAlgorithm interface {
-	GetName() string
-}
+package Common
 
 type SortCompareFunc func(x, y int) int
 type NodeCompareFunc func(x, y interface{}) int

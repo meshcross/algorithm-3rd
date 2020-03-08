@@ -11,7 +11,7 @@
 * 		- 原地操作
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:17:43
- * @LastEditTime: 2020-03-06 12:18:56
+ * @LastEditTime: 2020-03-08 17:25:23
  * @LastEditors:
 */
 package SelectAlgorithm
@@ -20,7 +20,6 @@ import (
 	"errors"
 	"math/rand"
 
-	. "github.com/meshcross/algorithm-3rd/mesh"
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 

@@ -17,7 +17,7 @@
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-04 23:01:26
- * @LastEditTime: 2020-03-07 12:22:28
+ * @LastEditTime: 2020-03-08 17:20:40
  * @LastEditors:
 */
 
@@ -27,7 +27,6 @@ import (
 	"errors"
 	"fmt"
 
-	. "github.com/meshcross/algorithm-3rd/mesh"
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 

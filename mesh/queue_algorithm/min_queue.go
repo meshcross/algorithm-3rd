@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 
-	. "github.com/meshcross/algorithm-3rd/mesh"
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 

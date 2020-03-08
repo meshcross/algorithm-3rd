@@ -4,13 +4,12 @@
 		操作2：pos左边和右边各得到一个数组，对新数组重复进行操作1，直到拆分出来的子数组元素个数<=1
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:49:03
- * @LastEditTime: 2020-03-06 12:41:44
+ * @LastEditTime: 2020-03-08 17:25:02
  * @LastEditors:
 */
 package SortAlgorithm
 
 import (
-	. "github.com/meshcross/algorithm-3rd/mesh"
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 

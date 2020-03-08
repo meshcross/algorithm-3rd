@@ -2,14 +2,10 @@
  * @Description: golang algorithm
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:48:40
- * @LastEditTime: 2020-03-01 18:34:48
+ * @LastEditTime: 2020-03-08 17:25:11
  * @LastEditors:
  */
 package SortAlgorithm
-
-import (
-	. "github.com/meshcross/algorithm-3rd/mesh"
-)
 
 //! merge：算法导论第二章 2.3.1 分治算法
 /*!

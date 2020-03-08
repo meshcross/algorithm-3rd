@@ -2,7 +2,7 @@
  * @Description: 树结构，包含二叉树，二叉搜索树，红黑树
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-14 20:03:01
- * @LastEditTime: 2020-03-05 12:12:57
+ * @LastEditTime: 2020-03-08 17:24:45
  * @LastEditors:
  */
 package TreeAlgorithm
@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/meshcross/algorithm-3rd/mesh"
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 

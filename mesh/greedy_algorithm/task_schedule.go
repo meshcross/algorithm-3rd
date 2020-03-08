@@ -3,7 +3,7 @@
 	单处理器上的的单位时间任务最优调度问题，其中每个任务有一个截止时间以及错过截止时间后的惩罚值。
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-03 14:23:55
- * @LastEditTime: 2020-03-05 12:18:59
+ * @LastEditTime: 2020-03-08 17:25:47
  * @LastEditors:
 */
 package GreedyAlgorithm
@@ -12,7 +12,6 @@ import (
 	"sort"
 
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
-	// . "github.com/meshcross/algorithm-3rd/mesh/QuickSort"
 )
 
 type TaskSchedule struct {

@@ -2,7 +2,7 @@
  * @Description: golang algorithm
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 20:09:31
- * @LastEditTime: 2020-03-05 12:06:30
+ * @LastEditTime: 2020-03-08 17:25:36
  * @LastEditors:
  */
 package QueueAlgorithm
@@ -10,7 +10,6 @@ package QueueAlgorithm
 import (
 	"testing"
 
-	. "github.com/meshcross/algorithm-3rd/mesh"
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 
