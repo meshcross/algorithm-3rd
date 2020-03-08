@@ -1,10 +1,19 @@
 /*
  * @Description: 二叉搜索树，算法导论12章
  *				二叉搜索树是一种特殊的二叉树。在二叉树中的任何一个节点，该节点的左子节点值小于它；该节点的右子节点值大于它。
- *
+ *				该算法有个缺陷，经过多次插入和删除之后，有可能改变树的形态，变为类似如下的结构：
+					8
+					  \
+					   10
+						 \
+						  15
+							\
+							 20
+				这样的结构进行搜索，其搜索性能已经变为O(n)了
+				为了避免出现这样的情况，一般需要在二叉搜索树中加入平衡算法，以让树左右平衡
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:20:21
- * @LastEditTime: 2020-03-04 22:58:16
+ * @LastEditTime: 2020-03-06 16:17:52
  * @LastEditors:
  */
 package TreeAlgorithm
@@ -14,14 +23,6 @@ import (
 
 	. "github.com/meshcross/algorithm-3rd/mesh"
 )
-
-//!SearchTree：二叉搜索树，算法导论12章
-/*!
-*
-* 二叉搜索树是一种特殊的二叉树。在二叉树中的任何一个节点，该节点的左子节点值小于它；该节点的右子节点值大于它。
-*
-* > 这里节点值指的是节点存储的数据的值
- */
 
 type BinarySearchTree struct {
 	BinaryTree

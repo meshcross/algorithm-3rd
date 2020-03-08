@@ -2,7 +2,7 @@
  * @Description: 定义三元组和二元组
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-19 08:45:35
- * @LastEditTime: 2020-03-06 13:00:44
+ * @LastEditTime: 2020-03-07 20:37:09
  * @LastEditors:
  */
 package Common
@@ -40,8 +40,12 @@ func NewTuple(first, second, third int) *Tuple {
 }
 
 type PairAny struct {
-	Fisrt, Second interface{}
+	First, Second interface{}
 	Compare       CompareFunc
+}
+
+func NewPairAny(first, second interface{}) *PairAny {
+	return &PairAny{First: first, Second: second}
 }
 
 type TupleAny struct {
