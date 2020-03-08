@@ -20,7 +20,7 @@
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-07 12:45:31
- * @LastEditTime: 2020-03-08 16:28:27
+ * @LastEditTime: 2020-03-08 16:45:21
  * @LastEditors:
 */
 package DataStruct
@@ -35,7 +35,7 @@ import (
 
 /**
  * @description: B+树的中间节点
- * keys最大个数为_N-1，children的最大个数为_N
+ * keys最大个数为_Order-1，children的最大个数为_Order
  * 比如5阶的B+树，每个节点至多有4个key，至少2个key，至多5个子节点
  */
 type BPlusTreeNode struct {
@@ -46,7 +46,7 @@ type BPlusTreeNode struct {
 	_Children     []*BPlusTreeNode
 	_Compare      NodeCompareFunc
 	_ChildrenSize int  //当前存放了多少child
-	Leaf          bool //是否为叶节点
+	_Leaf         bool //是否为叶节点
 
 	_Datas []*PairAny //真正存储数据的地方
 
@@ -54,6 +54,26 @@ type BPlusTreeNode struct {
 	_maxCount int
 
 	Next *BPlusTreeNode //横向的下一个节点，用于链表遍历,只有叶子节点需要维护Next关系;只有叶节点拆分与合并的时候才需要改变该属性
+}
+
+func (a *BPlusTreeNode) IsLeaf() bool {
+	return a._Leaf
+}
+
+//由于叶节点不会存储children，非叶节点不会存储Datas，所以这里做个懒分配处理
+func (a *BPlusTreeNode) SetLeaf(v bool) {
+	if v {
+		a._Children = nil
+		if a._Datas == nil {
+			a._Datas = make([]*PairAny, a._Order)
+		}
+	} else {
+		a._Datas = nil
+		if a._Children == nil {
+			a._Children = make([]*BPlusTreeNode, a._Order+1)
+		}
+	}
+	a._Leaf = v
 }
 
 //正好最大
@@ -110,10 +130,14 @@ func (a *BPlusTreeNode) RemoveKeyAt(index int) {
 	if index >= 0 && index < a._KeySize {
 		for i := index; i < a._KeySize-1; i++ {
 			a._Keys[i] = a._Keys[i+1]
-			a._Datas[i] = a._Datas[i+1]
+			if a._Datas != nil {
+				a._Datas[i] = a._Datas[i+1]
+			}
 		}
 		a._Keys[a._KeySize-1] = nil
-		a._Datas[a._KeySize-1] = nil
+		if a._Datas != nil {
+			a._Datas[a._KeySize-1] = nil
+		}
 		a._KeySize--
 	}
 }
@@ -153,7 +177,7 @@ func (a *BPlusTreeNode) ChangeChildrenSize(dx int) int {
 }
 func (a *BPlusTreeNode) DataAt(index int) *PairAny {
 
-	if index >= 0 && index < a._KeySize {
+	if a._Datas != nil && index >= 0 && index < a._KeySize {
 		return a._Datas[index]
 	}
 	return nil
@@ -183,7 +207,7 @@ func (a *BPlusTreeNode) KeyAt(index int) interface{} {
 }
 func (a *BPlusTreeNode) Find(key interface{}) (int, *PairAny) {
 	//不是叶节点，则只能返回下一个查找子节点的下标
-	if !a.Leaf {
+	if !a.IsLeaf() {
 		i := 0
 		c := a._KeySize
 		for i < c {
@@ -213,7 +237,7 @@ func (a *BPlusTreeNode) Find(key interface{}) (int, *PairAny) {
 		if low <= high {
 			// index表示元素所在的位置
 			index := mid
-			if a.Leaf {
+			if a.IsLeaf() {
 				return 0, a._Datas[index]
 			} else {
 				child := a.ChildAt(index)
@@ -236,7 +260,9 @@ func (a *BPlusTreeNode) InsertKey(key interface{}) {
 
 	for x := c; x > i; x-- {
 		a._Keys[x] = a._Keys[x-1]
-		a._Datas[x] = a._Datas[x-1]
+		if a._Datas != nil {
+			a._Datas[x] = a._Datas[x-1]
+		}
 	}
 	a._Keys[i] = key
 	a._KeySize++
@@ -276,7 +302,7 @@ func (a *BPlusTreeNode) InsertChildAt(v *BPlusTreeNode, index int) {
 }
 
 func (a *BPlusTreeNode) GetLeft() (*BPlusTreeNode, error) {
-	if a.Leaf {
+	if a.IsLeaf() {
 		return a, nil
 	} else {
 		if a._ChildrenSize > 0 {
@@ -287,13 +313,16 @@ func (a *BPlusTreeNode) GetLeft() (*BPlusTreeNode, error) {
 
 }
 
-func NewBPlusTreeNode(order int, compare NodeCompareFunc) *BPlusTreeNode {
+func NewBPlusTreeNode(order int, compare NodeCompareFunc, leaf bool) *BPlusTreeNode {
 	countMin := order / 2
 	countMax := order - 1
 	keys := make([]interface{}, countMax+1)
-	datas := make([]*PairAny, countMax+1)
-	children := make([]*BPlusTreeNode, order+1)
-	return &BPlusTreeNode{_Order: order, _Datas: datas, _maxCount: countMax, _minCount: countMin, _Keys: keys, _Children: children, _Compare: compare}
+	//datas := make([]*PairAny, countMax+1)
+	//children := make([]*BPlusTreeNode, order+1)
+	// return &BPlusTreeNode{_Order: order, _Datas: datas, _maxCount: countMax, _minCount: countMin, _Keys: keys, _Children: children, _Compare: compare}
+	node := &BPlusTreeNode{_Order: order, _maxCount: countMax, _minCount: countMin, _Keys: keys, _Compare: compare}
+	node.SetLeaf(leaf)
+	return node
 }
 
 /**
@@ -311,8 +340,7 @@ type BPlusTree struct {
 func NewBPlusTree(order int, compare NodeCompareFunc) *BPlusTree {
 	maxNum := order - 1
 	minNum := order / 2
-	root := NewBPlusTreeNode(order, compare)
-	root.Leaf = true
+	root := NewBPlusTreeNode(order, compare, true)
 	return &BPlusTree{_Compare: compare, _MaxKeyNum: maxNum, _MinKeyNum: minNum, Root: root, _Order: order}
 }
 
@@ -345,7 +373,7 @@ func (tree *BPlusTree) Find(key interface{}) *PairAny {
 func (tree *BPlusTree) findFrom(node *BPlusTreeNode, key interface{}) *PairAny {
 
 	index, ret := node.Find(key)
-	if node.Leaf {
+	if node.IsLeaf() {
 		return ret
 	} else if index >= 0 {
 		child := node.ChildAt(index)
@@ -394,7 +422,7 @@ func (tree *BPlusTree) insertTo(node *BPlusTreeNode, e *PairAny) (*BPlusTreeNode
 		i++
 	}
 
-	if node.Leaf {
+	if node.IsLeaf() {
 		keys := node.Keys()
 		datas := node.Datas()
 		for x := c; x > i; x-- {
@@ -437,8 +465,7 @@ func (tree *BPlusTree) splidNode(node *BPlusTreeNode) (*BPlusTreeNode, error) {
 	p := node.GetParent()
 	//根节点需要拆分，先创建一个根
 	if p == nil {
-		p = NewBPlusTreeNode(tree._Order, tree._Compare)
-		p.Leaf = false
+		p = NewBPlusTreeNode(tree._Order, tree._Compare, false)
 		node.SetParent(p)
 		p.InsertChild(node)
 		retNode = p
@@ -449,10 +476,9 @@ func (tree *BPlusTree) splidNode(node *BPlusTreeNode) (*BPlusTreeNode, error) {
 
 	p.InsertKey(node.KeyAt(middle))
 
-	right := NewBPlusTreeNode(node._Order, node._Compare)
-	right.Leaf = node.Leaf
+	right := NewBPlusTreeNode(node._Order, node._Compare, node.IsLeaf())
 
-	if node.Leaf { //如果是叶节点，需要转移数据
+	if node.IsLeaf() { //如果是叶节点，需要转移数据
 
 		for k := node.KeySize() - 1; k >= middle; k-- {
 			tree.insertTo(right, node.DataAt(k))
@@ -528,7 +554,7 @@ func (tree *BPlusTree) mergeNode(node1, node2 *BPlusTreeNode) (*BPlusTreeNode, e
 
 	if node1_is_small {
 		//把node2中的数据都移到node1中
-		if node1.Leaf {
+		if node1.IsLeaf() {
 			size := node2.KeySize()
 			for i := 0; i < size; i++ {
 				tree.insertTo(node1, node2.DataAt(i))
@@ -594,7 +620,7 @@ func (tree *BPlusTree) deleteFrom(node *BPlusTreeNode, key interface{}) (*BPlusT
 	i := 0
 	c := node.KeySize()
 
-	if node.Leaf {
+	if node.IsLeaf() {
 		for i < c {
 			if tree._Compare(key, node.KeyAt(i)) == 0 {
 				break
@@ -683,7 +709,7 @@ func (tree *BPlusTree) deleteFixup(node *BPlusTreeNode) (*BPlusTreeNode, error) 
 		leftSibling.RemoveChildAt(leftSibling.KeySize() - 1)
 
 		//非叶节点处理key和child
-		if !leftSibling.Leaf {
+		if !leftSibling.IsLeaf() {
 			p.RemoveKeyAt(index)
 			//处理key
 			node.InsertKey(parentKey)
@@ -706,7 +732,7 @@ func (tree *BPlusTree) deleteFixup(node *BPlusTreeNode) (*BPlusTreeNode, error) 
 		rightSibling.RemoveChildAt(0)
 
 		//非叶节点需要处理key和child,而且key的处理方式是不一样的
-		if !rightSibling.Leaf {
+		if !rightSibling.IsLeaf() {
 			p.RemoveKeyAt(index)
 			//处理key
 			node.InsertKey(parentKey)
@@ -775,13 +801,13 @@ func (tree *BPlusTree) Print(show_leafs ...bool) {
 				fmt.Printf(fmt.Sprintf("%d,", jchild.KeyAt(w)))
 			}
 			leaf := ""
-			if jchild.Leaf {
+			if jchild.IsLeaf() {
 				leaf = "leaf"
 			}
 			fmt.Printf(" %s) ", leaf)
 		}
 		if len(arr) > 0 {
-			leaf := arr[0].Leaf
+			leaf := arr[0].IsLeaf()
 			if show_leaf && leaf {
 				fmt.Println()
 				fmt.Println("--leaf datas--")
