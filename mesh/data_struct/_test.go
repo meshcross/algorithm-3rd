@@ -3,7 +3,7 @@
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-05 11:37:55
- * @LastEditTime: 2020-03-08 16:29:40
+ * @LastEditTime: 2020-03-10 12:48:11
  * @LastEditors:
  */
 
@@ -261,4 +261,73 @@ func TestBPlusTreeDelete(t *testing.T) {
 	fmt.Println("-------------n 41-------------")
 
 	tree.LoopList(" loop all leaf node ")
+}
+
+/**
+ * @description: 直接使用的书上的例子，跟进书中逻辑一步步实现的
+ * @param {type}
+ * @return:
+ */
+func TestFibonacciHeap(t *testing.T) {
+	compare := NodeCompareFunc_IntLessThan
+	heap := NewFibonacciHeap(compare)
+
+	node23 := NewFibonacciNode(23, compare)
+	node7 := NewFibonacciNode(7, compare)
+	node21 := NewFibonacciNode(21, compare)
+
+	node3 := NewFibonacciNode(3, compare)
+	node18 := NewFibonacciNode(18, compare)
+	node18.Mark = true
+	node52 := NewFibonacciNode(52, compare)
+	node38 := NewFibonacciNode(38, compare)
+	node39 := NewFibonacciNode(39, compare)
+	node39.Mark = true
+	node41 := NewFibonacciNode(41, compare)
+
+	AddFibChild(node18, node39)
+	AddFibChild(node38, node41)
+	AddFibChild(node3, node18)
+	AddFibChild(node3, node52)
+	AddFibChild(node3, node38)
+
+	node17 := NewFibonacciNode(17, compare)
+	node30 := NewFibonacciNode(30, compare)
+	AddFibChild(node17, node30)
+
+	node24 := NewFibonacciNode(24, compare)
+	node26 := NewFibonacciNode(26, compare)
+	node26.Mark = true
+	node46 := NewFibonacciNode(46, compare)
+	node35 := NewFibonacciNode(35, compare)
+	AddFibChild(node26, node35)
+	AddFibChild(node24, node26)
+	AddFibChild(node24, node46)
+
+	// heap.Insert(node23)
+	// heap.Insert(node7)
+	// heap.Insert(node21)
+	// heap.Insert(node3)
+	// heap.Insert(node17)
+	// heap.Insert(node24)
+	// heap.UpdateDegree()
+	// heap.UpdateN()
+	arr := NewArrayList(8, NodeCompareFunc_IntLessThan)
+	arr.Append(node23)
+	arr.Append(node7)
+	arr.Append(node21)
+	arr.Append(node3)
+	arr.Append(node17)
+	arr.Append(node24)
+	//因为直接调用heap.Insert会出现堆的形态调整，不方便构造跟书中相同的初始树，所以提供了一个heap.UseTestData函数，方便构造跟书中一样的初始树
+	heap.UseTestData(node3, arr)
+
+	// heap.Print()
+
+	heap.ExtractMin()
+
+	// heap.DecreaseKey(node46, 15)
+	// heap.DecreaseKey(node35, 5)
+	heap.Delete(node46)
+	heap.Print()
 }
