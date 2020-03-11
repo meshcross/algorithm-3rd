@@ -3,7 +3,7 @@
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-05 11:37:55
- * @LastEditTime: 2020-03-10 12:48:11
+ * @LastEditTime: 2020-03-11 14:48:04
  * @LastEditors:
  */
 
@@ -330,4 +330,34 @@ func TestFibonacciHeap(t *testing.T) {
 	// heap.DecreaseKey(node35, 5)
 	heap.Delete(node46)
 	heap.Print()
+}
+
+/**
+ *  二项堆
+ *
+ */
+func TestBinomialHeap(t *testing.T) {
+	compare := NodeCompareFunc_IntLessThan
+	heap := NewBinomialHeap(compare)
+	num := 100
+	nodes := make([]*BinomialHeapNode, num+1)
+	for k := 1; k <= num; k++ {
+		nodes[k] = NewBinomialHeapNode(k, compare)
+	}
+	heap.Insert(nodes[8])
+	heap.Insert(nodes[10])
+	heap.Insert(nodes[50])
+	heap.Insert(nodes[100])
+	heap.Insert(nodes[80])
+	heap.Insert(nodes[25])
+	heap.Insert(nodes[15])
+	heap.Insert(nodes[5])
+	heap.Insert(nodes[30])
+	heap.Insert(nodes[40])
+
+	heap.Print("--insert---")
+	// heap.ExtractMin()
+	//heap.DecreaseKey(nodes[40], 3)
+	heap.Delete(nodes[40])
+	heap.Print("--delete---")
 }

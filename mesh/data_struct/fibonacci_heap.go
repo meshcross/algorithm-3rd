@@ -184,7 +184,7 @@ func NewFibonacciNode(key interface{}, compare NodeCompareFunc) *FibonacciNode {
 }
 
 type FibonacciHeap struct {
-	n       int             //所有节点数量
+	n       int             //所有节点总数
 	minNode *FibonacciNode  //最小节点，即双向链表头
 	roots   *ArrayList      //根节点，多个，动态数组
 	Compare NodeCompareFunc //node.key的比较函数
@@ -217,7 +217,7 @@ func (heap *FibonacciHeap) ChildAt(index int) *FibonacciNode {
 	return nil
 }
 
-func (heap *FibonacciHeap) Destory() {
+func (heap *FibonacciHeap) Destroy() {
 
 }
 func (heap *FibonacciHeap) Print() {
@@ -598,7 +598,7 @@ func (heap *FibonacciHeap) _nodeMarkCount(node *FibonacciNode, c *int) {
  * @param {type}
  * @return:
  */
-func FibHeapUnion(h1, h2 *FibonacciHeap) *FibonacciHeap {
+func FibonacciHeapUnion(h1, h2 *FibonacciHeap) *FibonacciHeap {
 	newHeap := NewFibonacciHeap(h1.Compare)
 	newHeap.minNode = h1.minNode
 
@@ -610,8 +610,13 @@ func FibHeapUnion(h1, h2 *FibonacciHeap) *FibonacciHeap {
 	}
 	newHeap.n = h1.n + h2.n
 
-	h1.Destory()
-	h2.Destory()
+	//h1,h2的根节点合并之后，degree可能会有冲突，需要处理一下
+	//比如h1有3个根节点，度分别为1，2，3，h2有2个根节点，度分别为2，3，
+	//则进行上述合并操作之后，根节点变为5个，度分别为1,2,3,2,3，所以要进行consolidate操作
+	newHeap.consolidate()
+
+	h1.Destroy()
+	h2.Destroy()
 	return newHeap
 }
 

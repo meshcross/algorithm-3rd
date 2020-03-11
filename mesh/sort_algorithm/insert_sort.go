@@ -2,12 +2,12 @@
  * @Description: golang algorithm
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:48:15
- * @LastEditTime: 2020-03-01 18:34:44
+ * @LastEditTime: 2020-03-10 16:34:57
  * @LastEditors:
  */
 package SortAlgorithm
 
-import . "github.com/meshcross/algorithm-3rd/mesh"
+import . "github.com/meshcross/algorithm-3rd/mesh/common"
 
 //!insert_sort：算法导论第二章 2.1 插入排序
 /*!

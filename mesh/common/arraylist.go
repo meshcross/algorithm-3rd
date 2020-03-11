@@ -2,7 +2,7 @@
  * @Description: 实现动态数组
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-08 22:20:02
- * @LastEditTime: 2020-03-10 12:02:10
+ * @LastEditTime: 2020-03-10 18:53:57
  * @LastEditors:
  */
 package Common
@@ -35,6 +35,11 @@ func (l *ArrayList) Size() int {
 }
 func (l *ArrayList) Capacity() int {
 	return l._capacity
+}
+func (l *ArrayList) SetValue(index int, v interface{}) {
+	if index >= 0 && index < l._size {
+		l._datas[index] = v
+	}
 }
 
 /**
