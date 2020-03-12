@@ -1,8 +1,8 @@
 /*
- * @Description: 32.2 Rabin-Karp算法
+ * @Description: 第32章 32.2 Rabin-Karp算法
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:19:49
- * @LastEditTime: 2020-03-05 17:45:47
+ * @LastEditTime: 2020-03-12 17:07:16
  * @LastEditors:
  */
 package StringMatchingAlgorithm
@@ -53,6 +53,17 @@ func (a *RabinKarpMatch) Match(text, pattern string, radix_d, mod_q int) []int {
 	//预处理，先求出边界位置的t值才能使用递推式
 	//通过t[s]得出t[s+1]，所以必然需要计算出第一个值t[0]
 	//同时要将计算出的p值和t[i]进行比较，所以p也是要计算出来的，p只需要计算一次，以后跟每个t[i]比较即可
+	//这里有一个极为重要的性质： (m.n)%q = (m%q)%q
+	/**
+		证明：(m.n)%q = (m%q)%q
+			令 m=aq + t1 ,m.n = bq + t2 ,(m%q).n = cq + t3
+			这里要证明结论：t2==t3
+			(m%q).n = t1.n = cq+t3
+			(aq+t1).n = bq+t2 =>t1.n = bq+t2-aqn = cq + t3 =>t2 = t3 + q.(c + aq -b)
+			由于t2,t3均满足 0<=t<q ，为整数，c,aq,b也为整数，所以必然有:
+			t2=t3，c+aq-b=0
+			即证
+	**/
 	for i := 0; i < m; i++ {
 		p = (radix_d*p + int(pattern[i])) % mod_q
 		t0 = (radix_d*t0 + int(text[i])) % mod_q
@@ -75,7 +86,7 @@ func (a *RabinKarpMatch) Match(text, pattern string, radix_d, mod_q int) []int {
 				result = append(result, s)
 			}
 		}
-		//当 s!=n-m时，向后循环推进
+		//当 s<n-m时，向后循环推进
 		if s < n-m {
 			s_int := int(text[s])
 			sm_int := int(text[s+m])

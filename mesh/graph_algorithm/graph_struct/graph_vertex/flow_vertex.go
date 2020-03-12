@@ -1,3 +1,10 @@
+/*
+ * @Description: 第26章 最大流 26.4 推送重贴标签算法 FlowVertex
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-18 10:30:56
+ * @LastEditTime: 2020-03-12 15:27:18
+ * @LastEditors:
+ */
 package GraphVertex
 
 type IFlowVertex interface {

@@ -1,5 +1,5 @@
 /*
- * @Description: 算法导论第9章9.3 最坏时间为O(n)的顺序统计量选择算法
+ * @Description: 第9章 9.3 最坏时间为O(n)的顺序统计量选择算法
 			选择算法思想，假设对数组A[p...r]选择，选择第k小的元素：
 *      				- 选择主元：
 *          				- 首先将序列从前往后，按照5个元素一组分组。其中最后一组可能为1～5个元素（也就是可能不是满的）
@@ -16,13 +16,14 @@
 * 			- 非原地操作：因为这里要把所有分组的中位数构造成一个序列，然后把找到该序列的中位数作为good_select(...)的主元
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:17:35
- * @LastEditTime: 2020-03-06 12:36:28
+ * @LastEditTime: 2020-03-12 12:20:49
  * @LastEditors:
 */
 package SelectAlgorithm
 
 import (
 	"errors"
+	"math"
 
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 	SortAlgorithm "github.com/meshcross/algorithm-3rd/mesh/sort_algorithm"
@@ -32,7 +33,7 @@ type GoodSelect struct {
 }
 
 /**
- * @description: 从数组s中找到第rank小的元素,rank从0开始
+ * @description: 从数组s中找到第rank小的元素,rank从0开始到size-1
 			数组s可以改为s[]interface{}，只需要使用对应的SortCompareFunc即可
  * @param s:数据源
  * @param rank:第rank小
@@ -70,7 +71,9 @@ func (a *GoodSelect) _select(s []int, begin, end, rank int, compare SortCompareF
 	quick_sort := SortAlgorithm.QuickSort{}
 	// *********  将序列划分为5个元素一组的区间，最后一组可能不满5个元素；对每组进行排序，取出其中值放入slice中  *********
 	iter := begin
-	middle_nums := []int{}
+	cnt := int(math.Ceil(float64(size) / float64(SPAN)))
+	middle_nums := make([]int, cnt) //额外的内存开销
+	middle_index := 0
 	for iter < end {
 		from := iter
 		to := iter + SPAN
@@ -78,10 +81,13 @@ func (a *GoodSelect) _select(s []int, begin, end, rank int, compare SortCompareF
 			to = end
 		}
 
-		sub := s[from:to]
-		quick_sort.Sort(sub, compare)
-		sub_size := len(sub)
-		middle_nums = append(middle_nums, sub[(sub_size-1)/2])
+		// sub := s[from:to] //额外的内存开销,需要改进一下，直接使用quick_sort.Sort(arr,begin,end,compare)进行原地排序才行
+		// quick_sort.Sort(sub, compare)
+		// sub_size := len(sub)
+		quick_sort.SortPiece(s, from, to, compare)
+		sub_size := to - from
+		middle_nums[middle_index] = s[from+(sub_size-1)/2]
+		middle_index++
 		iter += SPAN
 	}
 	// ********* 取出这些中值的中值,如果有偶数个，默认选择较小的 ************
@@ -92,16 +98,16 @@ func (a *GoodSelect) _select(s []int, begin, end, rank int, compare SortCompareF
 		iter++
 	}
 	//********* 划分 **************
-	mid_of_middles_iter := a.partition(s, begin, end, iter, compare) //以中值的中值作为一个划分值
+	mid_of_middles_pos := a.partition(s, begin, end, iter, compare) //以中值的中值作为一个划分值
 	// ********** 判别 ***************
-	mid_of_middles_rank := mid_of_middles_iter - begin //中值的中值在划分之后的排序
+	mid_of_middles_rank := mid_of_middles_pos - begin //中值的中值在划分之后的排序
 
 	if mid_of_middles_rank == rank { //找到了该排位的数
-		return s[mid_of_middles_iter], nil
+		return s[mid_of_middles_pos], nil
 	} else if mid_of_middles_rank < rank { //目标排位在右侧
-		return a._select(s, mid_of_middles_iter+1, end, rank-mid_of_middles_rank-1, compare) //mid_of_middles_iter+1，则找右侧的第rank-mid_of_middles_rank-1位
+		return a._select(s, mid_of_middles_pos+1, end, rank-mid_of_middles_rank-1, compare) //mid_of_middles_pos+1，则找右侧的第rank-mid_of_middles_rank-1位
 	} else { //目标排位在左侧
-		return a._select(s, begin, mid_of_middles_iter, rank, compare)
+		return a._select(s, begin, mid_of_middles_pos, rank, compare)
 	}
 }
 

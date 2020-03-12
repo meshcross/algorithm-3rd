@@ -1,5 +1,5 @@
 /*
- * @Description: 算法导论第8章 8.4 桶排序
+ * @Description: 第8章 8.4 桶排序
  * 		- 桶排序思想，假设对数组A[p...r]排序，首先将这些元素进行hash运算，根据其hash值放入桶的对应区间中；
  *		  然后对每一个区间中的元素进行排序；最后合并桶中各区间排序好的结果得到排序的数据：
 *   		- hash算法必须满足：若 a<b ，则hash(a)<hash(b)
@@ -8,7 +8,7 @@
 * 		- 非原地排序
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:48:31
- * @LastEditTime: 2020-03-10 16:35:35
+ * @LastEditTime: 2020-03-11 22:20:21
  * @LastEditors:
 */
 package SortAlgorithm

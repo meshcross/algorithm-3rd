@@ -1,28 +1,7 @@
 /*
- * @Description: golang algorithm
- * @Author: wangchengdg@gmail.com
- * @Date: 2020-02-18 10:35:17
- * @LastEditTime: 2020-03-05 12:18:50
- * @LastEditors:
- */
-package SingleSourceShortestPath
-
-import (
-	"errors"
-
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
-	. "github.com/meshcross/algorithm-3rd/mesh/queue_algorithm"
-
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
-)
-
-//!dijkstra：单源最短路径的dijkstra算法，算法导论24章24.3节
-// 有权重的有向图上单源最短路径问题,Dijkstra算法要求所有边的权重都为非负值，算法会维护一个最小优先队列。
-/*!
- * \param graph:指向图的强指针
- * \param source_id：最小生成树的根结点`id`
- * \return: void
+ * @Description: 第24章 24.3 单源最短路径的dijkstra算法
+ *
+ *					有权重的有向图上单源最短路径问题,Dijkstra算法要求所有边的权重都为非负值，算法会维护一个最小优先队列。
  *
  * ## 单源最短路径
  *
@@ -49,6 +28,36 @@ import (
  * Dijkstra算法核心信息是一组结点集合 S 。从源结点s 到集合 S 中的每一个结点之间的最短路径已经被找到。算法重复从结点集合 V-S 中选择最短路径估计最小的结点u,
  * 将u加入到集合S中，然后对所有从u出发的边进行松弛。本算法利用最小优先队列Q来保存结点集合，每个结点的关键字为它的key值。
  *
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-18 10:35:17
+ * @LastEditTime: 2020-03-12 13:11:13
+ * @LastEditors:
+ */
+package SingleSourceShortestPath
+
+import (
+	"errors"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
+	. "github.com/meshcross/algorithm-3rd/mesh/queue_algorithm"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
+)
+
+type Dijkstra struct {
+}
+
+func NewDijkstra() *Dijkstra {
+	return &Dijkstra{}
+}
+
+/*!
+ * @description:单源最短路径的dijkstra算法
+ * @param graph:图
+ * @param source_id：最小生成树的根结点`id`
+ * @return: error
+ *
  * ### 算法步骤
  *
  * - 调用 `initializeSingleSource`函数对图的顶点进行初始化
@@ -65,13 +74,6 @@ import (
  * 时间复杂度为O(V^2+E)
  *
  */
-type Dijkstra struct {
-}
-
-func NewDijkstra() *Dijkstra {
-	return &Dijkstra{}
-}
-
 func (a *Dijkstra) ShortestPath(graph *Graph, source_id int) error {
 	if graph == nil {
 		return errors.New("initialize_single_source error: graph must not be nil!")
@@ -87,8 +89,7 @@ func (a *Dijkstra) ShortestPath(graph *Graph, source_id int) error {
 	//************* 第一阶段 初始化  ***************
 	a.initializeSingleSource(graph, source_id)
 
-	//************* 第二阶段 构建最小堆  ***************
-	//最小优先队列
+	//************* 第二阶段 构建最小优先队列  ***************
 	q := NewMinQueue(NodeCompareFunc_VertexLessThan, nil)
 	for i := 0; i < num; i++ {
 		vertex := graph.Vertexes[i]
@@ -97,7 +98,7 @@ func (a *Dijkstra) ShortestPath(graph *Graph, source_id int) error {
 		}
 	}
 
-	//************* 第三阶段 从最小堆中提取元素u，不断的relax结点u的相关的边  ***************
+	//************* 第三阶段 从最小优先队列中提取元素u，不断的relax结点u的相关的边  ***************
 	for !q.IsEmpty() {
 
 		//把Key最小的从队列中提出来
@@ -106,9 +107,6 @@ func (a *Dijkstra) ShortestPath(graph *Graph, source_id int) error {
 		if !ok || minNode == nil {
 			continue
 		}
-
-		//setVtx := Vertex2SetVertex(minNode)
-		//sets := append(sets, setVtx)
 
 		edges, _ := graph.VertexEdgeTuples(minNode.GetID())
 		for _, edge := range edges {
@@ -129,13 +127,13 @@ func (a *Dijkstra) ShortestPath(graph *Graph, source_id int) error {
 
 func (a *Dijkstra) initializeSingleSource(graph *Graph, source_id int) error {
 	if graph == nil {
-		return errors.New("initialize_single_source error: graph must not be nil!")
+		return errors.New("initializeSingleSource error: graph must not be nil!")
 	}
 
 	num := graph.N()
 	unlimit := Unlimit()
 	if source_id < 0 || source_id >= num || graph.Vertexes[source_id] == nil {
-		return errors.New("initialize_single_source error: source_id muse belongs [0,N) and source vertex must not be nil!")
+		return errors.New("initializeSingleSource error: source_id muse belongs [0,N) and source vertex must not be nil!")
 	}
 
 	//**************** 设置所有结点 *****************

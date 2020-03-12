@@ -1,19 +1,7 @@
 /*
- * @Description: golang algorithm
- * @Author: wangchengdg@gmail.com
- * @Date: 2020-02-10 13:48:48
- * @LastEditTime: 2020-03-05 12:19:25
- * @LastEditors:
- */
-package SortAlgorithm
-
-import (
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-)
-
-//!radix_sort：算法导论第8章 8.3
-/*!
-* - 基数排序思想，假设对数组A[p...r]排序，其中数组中所有元素都为正整数，并且不超过RADIXWITH位（有模板的RADIXWITH参数指定）：
+ * @Description: 第8章 8.3 基数排序
+ *
+* - 基数排序思想，假设对数组A[p...r]排序，其中数组中所有元素都为正整数，并且不超过RADIXWITH位
 *   - 首先对A中所有元素按照个位数大小进行排序（原地的）
 *   - 再对A中所有元素按照十位数大小进行排序（原地的）
 *   - 一直到最后按照A中所有元素的最高位的数字大小进行排序（原地的）
@@ -26,7 +14,17 @@ import (
 *  - 用小于比较的插入排序是稳定的；用小于等于比较的插入排序是不稳定的
 *
 * >这里必须对整数才能采取基数排序
- */
+*
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-10 13:48:48
+ * @LastEditTime: 2020-03-11 22:12:27
+ * @LastEditors:
+*/
+package SortAlgorithm
+
+import (
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
+)
 
 type RadixSort struct {
 }

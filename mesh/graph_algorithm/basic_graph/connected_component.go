@@ -1,3 +1,10 @@
+/*
+ * @Description: 第21章 21.1 无向图的连通分量
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-18 10:21:23
+ * @LastEditTime: 2020-03-12 12:57:23
+ * @LastEditors:
+ */
 package BasicGraph
 
 import (
@@ -7,22 +14,6 @@ import (
 	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
 	. "github.com/meshcross/algorithm-3rd/mesh/set_algorithm"
 )
-
-//!connected_component：无向图的连通分量，算法导论21章21.1节
-/*!
-* \param graph:无向图，必须非空
-* \return:error
-*
-* connected_component函数使用不相交集合操作来计算一个无向图的连通分量。一旦connected_component函数处理了该图，same_component
-* 函数就会回答两个顶点是否在同一个连通分量。
-*
-* connected_component算法步骤：
-*
-* - 将每个顶点v放入它自己的集合中
-* - 对每一条边(u,v)，它将包含u和v的集合进行合并
-*
-* 在处理完搜有边之后，两个顶点在相同的连通分量当且仅当与之对应的对象在相同的集合中
- */
 
 type ConnectedComponent struct {
 }
@@ -39,7 +30,7 @@ func (a *ConnectedComponent) toSetVetex(vtx IVertex) *SetVertex {
 
 func (a *ConnectedComponent) SetConnectedComponent(graph *Graph) error {
 	if graph == nil {
-		return errors.New("connected_component error: graph must not be nil!")
+		return errors.New("SetConnectedComponent error: graph must not be nil!")
 	}
 	//*********** 初始化 ****************
 	sets := []*DisJointSetNode{}
@@ -71,30 +62,30 @@ func (a *ConnectedComponent) SetConnectedComponent(graph *Graph) error {
 	return nil
 }
 
-//!same_component：返回无向图的两个顶点是否位于同一个连通分量中。算法导论21章21.1节
 /*!
-*
-* \param graph:指向图的强指针，必须非空。若为空则抛出异常
-* \param id1:第一个顶点，必须有效。若无效则抛出异常
-* \param id2:第二个顶点，必须有效。若无效则抛出异常
+* @description:返回无向图的两个顶点是否位于同一个连通分量中
+* @param graph:图
+* @param id1:第一个顶点
+* @param id2:第二个顶点
+* @return bool:两个顶点是否在同一个连通分量中；error
 *
 * 当满足以下条件之一时，id无效的情况：
 *
-* - id小于0或者大于等于`GraphType::NUM`
-* - `graph->vertexes.at(id1)`为空
+* - id小于0或者大于等于`num`
+* - `graph.Vertexes[id1]`为空
 *
-* 在执行 same_component函数之前必须先执行 connected_component函数对无向图进行预处理。
+* 在执行 InSameComponent函数之前必须先执行 SetConnectedComponent函数对无向图进行预处理。
 *
  */
 func (a *ConnectedComponent) InSameComponent(graph *Graph, id1, id2 int) (bool, error) {
 
 	if graph == nil {
-		return false, errors.New("same_component error: graph must not be nullptr!")
+		return false, errors.New("InSameComponent error: graph must not be nil!")
 	}
 
 	num := graph.N()
 	if id1 < 0 || id1 >= num || graph.Vertexes[id1] == nil || id2 < 0 || id2 >= num || graph.Vertexes[id2] == nil {
-		return false, errors.New("same_component error: id muse belongs [0,N) and graph->vertexes[id] must not be nullptr!")
+		return false, errors.New("InSameComponent error: id muse belongs [0,N) and graph.Vertexes[id] must not be nil!")
 	}
 
 	vtx1 := a.toSetVetex(graph.Vertexes[id1])
@@ -108,5 +99,4 @@ func (a *ConnectedComponent) InSameComponent(graph *Graph, id1, id2 int) (bool, 
 	} else {
 		return false, nil
 	}
-
 }

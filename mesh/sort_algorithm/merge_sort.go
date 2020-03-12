@@ -1,8 +1,15 @@
 /*
- * @Description: golang algorithm
+ * @Description: 第二章 2.3.1 分治算法
+ *
+ * - 归并思想，假设对数组A[p...q...r]归并：
+ *   - 拷贝：将数组A[p...q]拷贝到数组L，将数组A[q...r]拷贝到数组R，
+ *   - 归并： 从左到右依次取L、R中的较小的元素，存放到A中
+ * - 时间复杂度 O(n)
+ * - 归并时需要额外的空间 O(n)
+ *
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:48:40
- * @LastEditTime: 2020-03-10 16:35:20
+ * @LastEditTime: 2020-03-11 22:39:40
  * @LastEditors:
  */
 package SortAlgorithm
@@ -11,22 +18,9 @@ import (
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 
-//! merge：算法导论第二章 2.3.1 分治算法
-/*!
-
-* - 归并思想，假设对数组A[p...q...r]归并：
-*   - 拷贝：将数组A[p...q]拷贝到数组L，将数组A[q...r]拷贝到数组R，
-*   - 归并： 从左到右依次取L、R中的较小的元素，存放到A中（具体算法见代码）
-* - 时间复杂度 O(n)
-* - 归并时需要额外的空间 O(n)
- */
-
 type MergeSort struct {
 }
 
-/**
-
-**/
 func (a *MergeSort) Sort(s []int, compares ...SortCompareFunc) {
 	size := len(s)
 	if size <= 1 {
@@ -70,7 +64,7 @@ func (a *MergeSort) merge(s []int, begin, end, middle int, compare SortCompareFu
 			result[current] = s[left_current] //左侧较小
 			left_current++
 		} else {
-			result[current] = s[right_current] //左侧较小
+			result[current] = s[right_current] //右侧较小
 			right_current++
 		}
 		current++

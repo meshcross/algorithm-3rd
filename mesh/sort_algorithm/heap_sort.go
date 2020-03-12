@@ -1,17 +1,17 @@
 /*
- * @Description: golang algorithm
+ * @Description: 第6章 堆排序
+ 					原地排序
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:47:55
- * @LastEditTime: 2020-03-05 11:58:28
+ * @LastEditTime: 2020-03-11 18:11:04
  * @LastEditors:
- */
+*/
 package SortAlgorithm
 
 import (
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 
-//!Sort_Heap：用于堆排序的堆，算法导论第6章
 /*!
  *
  * - 堆排序思想：假设对数组A[p...r]排序：首先将数组构建成一个最大堆（或者最小堆，这里的实现采用最大堆）。然后第一个元素就是堆中最大的元素。

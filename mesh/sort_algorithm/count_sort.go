@@ -1,16 +1,13 @@
 /*
- * @Description: golang algorithm
+ * @Description: 第8章 8.2 计数排序
+	计数排序假设输入数据都属于小区间内的整数
+
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:48:23
- * @LastEditTime: 2020-03-01 18:34:35
+ * @LastEditTime: 2020-03-11 18:13:14
  * @LastEditors:
- */
+*/
 package SortAlgorithm
-
-//!count_sort：算法导论第8章 8.2 计数排序
-/**
-假设n个输入元素的每一个元素都是0到k区间内的一个整数，其中k为某个整数。
-**/
 
 type CountSort struct {
 }
@@ -18,6 +15,8 @@ type CountSort struct {
 /**
 k为数组s中的最大元素
 计数排序假设输入数据都属于小区间内的整数
+
+假设n个输入元素的每一个元素都是0到k区间内的一个整数，其中k为某个整数。
 **/
 func (a *CountSort) Sort(s []int, k int) {
 	size := len(s)

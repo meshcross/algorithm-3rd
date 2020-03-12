@@ -1,22 +1,20 @@
 /*
- * @Description: golang algorithm
+ * @Description: 第2章 2.1 插入排序
+ *
+ * - 插入排序思想，假设对数组A[p...r]排序：
+ *   - 维持不变式：设当前排序的元素是 A[q]，则保持A[p...q-1]为排好的，A[q]在A[p...q-1]中找到它的位置坐下
+ * - 时间复杂度 O(n^2)
+ * - 原地排序
+ *
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:48:15
- * @LastEditTime: 2020-03-10 16:34:57
+ * @LastEditTime: 2020-03-11 22:32:40
  * @LastEditors:
  */
 package SortAlgorithm
 
 import . "github.com/meshcross/algorithm-3rd/mesh/common"
 
-//!insert_sort：算法导论第二章 2.1 插入排序
-/*!
-
- * - 插入排序思想，假设对数组A[p...r]排序：
- *   - 维持不变式：设当前排序的元素是 A[q]，则保持A[p...q-1]为排好的，A[q]在A[p...q-1]中找到它的位置坐下
- * - 时间复杂度 O(n^2)
- * - 原地排序
- */
 type InsertSort struct {
 }
 

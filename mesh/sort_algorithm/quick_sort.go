@@ -2,9 +2,12 @@
  * @Description: 算法导论第7章 快速排序
 		操作1：选取数组s最后一个元素作为参考x，将<x的值放到左边，>x的值放到右边，然后返回x在数组中的索引位置pos，然后执行操作2
 		操作2：pos左边和右边各得到一个数组，对新数组重复进行操作1，直到拆分出来的子数组元素个数<=1
+
+		原地排序
+
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 13:49:03
- * @LastEditTime: 2020-03-10 16:40:35
+ * @LastEditTime: 2020-03-12 11:18:18
  * @LastEditors:
 */
 package SortAlgorithm
@@ -99,6 +102,7 @@ func (a *QuickSort) partition(s []int, begin, end, partition int, compare SortCo
 	smaller_next := begin - 1 //指向比key小的元素区间的下一个(即大于等于key元素区间的第一个），其中key为序列最后一个元素
 	current := begin          //指向当前待处理的元素
 
+	Swap(s, partition, end-1)
 	for current != end-1 {
 		if compare(s[current], s[end-1]) > 0 {
 			smaller_next++
