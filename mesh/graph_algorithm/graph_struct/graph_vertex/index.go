@@ -2,7 +2,7 @@
  * @Description:
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-18 18:55:09
- * @LastEditTime: 2020-03-06 11:45:48
+ * @LastEditTime: 2020-03-13 14:03:34
  * @LastEditors:
  */
 package GraphVertex
@@ -20,7 +20,7 @@ import (
  */
 func GetPath(v_from IVertex, v_to IVertex) ([]int, error) {
 	if v_from == nil || v_to == nil {
-		return nil, errors.New("get_path error: vertex must not be null!")
+		return nil, errors.New("get_path error: vertex must not be nil!")
 	}
 
 	result := []int{}

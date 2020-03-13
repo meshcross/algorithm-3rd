@@ -1,10 +1,20 @@
 /*
- * @Description: 算法导论第6章6.5节 最小优先级队列
+ * @Description: 第6章6.5节 最小优先级队列
+ *
+ *  最小堆，是一种经过排序的完全二叉树，其中任一非终端节点的数据值均不大于其左子节点和右子节点的值。
+*
+* 优先级队列是一种用来维护由一组元素构成集合S的数据结构，其中每个元素都有一个相关的值，称之为关键字。一个最小优先级队列支持以下操作：
+*
+* - Insert(S,x):将元素x插入到集合S中。
+* - Min(S):返回S中具有最小关键字的元素
+* - ExtractMin(S):去掉并返回S中具有最小关键字的元素
+* - DecreaseKey(S,x,k):将元素x的关键字值减小到k,这里要求k的值小于x的原始关键字
+*
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:17:56
- * @LastEditTime: 2020-03-06 12:05:50
+ * @LastEditTime: 2020-03-13 10:55:40
  * @LastEditors:
- */
+*/
 package QueueAlgorithm
 
 import (
@@ -14,17 +24,6 @@ import (
 	. "github.com/meshcross/algorithm-3rd/mesh/common"
 )
 
-/*!
-* 最小堆，是一种经过排序的完全二叉树，其中任一非终端节点的数据值均不大于其左子节点和右子节点的值。
-*
-* 优先级队列是一种用来维护由一组元素构成集合S的数据结构，其中每个元素都有一个相关的值，称之为关键字。一个最小优先级队列支持以下操作：
-*
-* - Insert(S,x):将元素x插入到集合S中。
-* - Min(S):返回S中具有最小关键字的元素
-* - ExtractMin(S):去掉并返回S中具有最小关键字的元素
-* - DecreaseKey(S,x,k):将元素x的关键字值减小到k,这里要求k的值小于x的原始关键字
-*
- */
 type MinQueue struct {
 	_size   int
 	_data   []interface{}

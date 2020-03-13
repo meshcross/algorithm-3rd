@@ -14,7 +14,7 @@
 *
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-29 23:43:10
- * @LastEditTime: 2020-03-06 13:03:32
+ * @LastEditTime: 2020-03-13 16:36:40
  * @LastEditors:
 */
 package DynamicProgrammingAlgorithm
@@ -74,8 +74,9 @@ func (a *Knapsack) Pack01(goods []*Pair, capacity int) (int, []int, error) {
 
 		//ans2：缓存上一层数据的方式也可以实现，看起来更清晰一些
 		for j := cost_i; j <= capacity; j++ {
+			//last_f是上一层轮询goods所得(goods[i-1])，上一层不可能包含当前这一层的goods_i，
+			//在整个j循环中，都一直拿last_f跟这一层的数据相比，所以对于这一层的goods_i，只有选中和没有选中的问题，不存在j-1选了再问j要不要选的问题
 			new_value := last_f[j-cost_i] + value_i
-			//f[j] = MaxInt(f[j], f[j-cost_i]+value_i)
 			if new_value > last_f[j] {
 				f[j] = new_value
 
@@ -195,8 +196,9 @@ func (a *Knapsack) PackComplete(goods []*Pair, capacity int) (int, []int, error)
 		cost_i := goods[i].First
 		value_i := goods[i].Second
 		for j := cost_i; j <= capacity; j++ {
+			//随着j向右推进，容量增加，则goods_i可以不断添加，从而选择多个goods_i
+			//每一次的j循环，f都在被更新，这是和0/1背包问题最大的不同，一旦new_value被选中，表明又选了一个goods_i
 			new_value := f[j-cost_i] + value_i
-			//f[j] = MaxInt(f[j], f[j-cost_i]+value_i)
 			if new_value > f[j] {
 				f[j] = new_value
 
@@ -224,7 +226,7 @@ func (a *Knapsack) PackComplete(goods []*Pair, capacity int) (int, []int, error)
 }
 
 /**
-* @description多重背包问题，每种物品有数量限制
+* @description:多重背包问题，每种物品有数量限制
 * @param :goods 商品的消耗和价值,First为消耗，Second为价值，Third为限制数量
 * @param : capacity 背包容量
 * @return: 每种物品的数量

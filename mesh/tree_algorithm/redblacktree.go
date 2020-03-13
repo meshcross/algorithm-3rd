@@ -10,14 +10,14 @@
 	2、根节点是黑色
 	3、每个叶节点是黑色
 	4、如果一个节点是红色的，则它的两个子节点都是黑色的，反之则不一定
-	5、对每个节点，从该节点到其所有后代节点的简单路径上，均包含相同数目的黑色节点。
+	5、对每个节点，从该节点到其所有后代叶节点的简单路径上，均包含相同数目的黑色节点。
 
 	红黑树的典型用途是平衡数组，map和set的底层结构
 	红黑树对插入时间、删除时间和查找时间提供了最好可能的最坏情况担保O(lgn)。
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-03 17:27:15
- * @LastEditTime: 2020-03-08 17:24:52
+ * @LastEditTime: 2020-03-13 14:45:14
  * @LastEditors:
 */
 
@@ -42,11 +42,10 @@ func (a *RedBlackTreeChecker) GetNil() ITreeNode {
 
 type RedBlackTree struct {
 	BinarySearchTree
-	//nil哨兵节点，全局共用,存储在RedBlackTreeNode中
 }
 
 func NewRedBlackTree(compare NodeCompareFunc) *RedBlackTree {
-	//叶节点是黑色的，所有的叶节点都是node_nil
+	//叶节点是黑色的，所有的叶节点都是node_nil，全局共用node_nil
 	node_nil := &RedBlackTreeNode{
 		Color:          COLOR_BLACK,
 		BinaryTreeNode: BinaryTreeNode{_Parent: nil, _LChild: nil, _RChild: nil, _Key: 0},
@@ -95,7 +94,6 @@ func (a *RedBlackTree) Insert(node *RedBlackTreeNode) {
 		} else {
 			temp_parent.SetRChild(node)
 		}
-
 	}
 
 	a.insert_fixup(node)
@@ -107,10 +105,13 @@ func (a *RedBlackTree) Insert(node *RedBlackTreeNode) {
 * b、违反规则4，必然有z和z.p都为红色，重点调整此处冲突
 *
 * 插入时候旋转遵循以下规律，插入节点为z，p=z.p：
-* LL ——>R  p是左节点，并且z是左节点，则右旋转
-* RL—->LR  p是右节点，z是左节点，则先左旋转再右旋转
-* RR——>L   p是右节点，z是右节点，则左旋转
-* LR——->RL p是左节点，z是右节点，则先右旋转再左旋转
+* LL——>R   p是左节点，并且z是左节点，则右旋转pp
+* RR——>L   p是右节点，z是右节点，则左旋转pp
+* RL—->LR  p是右节点，z是左节点，则先左旋转再右旋转;有循环迭代，具体关系见代码
+* LR——->RL p是左节点，z是右节点，则先右旋转再左旋转;有循环迭代，具体关系见代码
+*
+* 对于RL和LR的情况，先通过一次R旋转将LR转变为RR，再执行RR->L，RL则做L旋转变为LL再执行LL->R
+*
 **/
 func (a *RedBlackTree) insert_fixup(z *RedBlackTreeNode) {
 
@@ -169,9 +170,9 @@ func (a *RedBlackTree) insert_fixup(z *RedBlackTreeNode) {
 }
 
 /**
- * @description:
- * @param {type}
- * @return:
+ * @description:从红黑树中删除一个节点
+ * @param :node 待删除的节点
+ * @return:void
 *
 * 算法：
 *
@@ -195,7 +196,7 @@ func (a *RedBlackTree) Delete(node *RedBlackTreeNode) {
 	var x *RedBlackTreeNode = ToRedBlackTreeNode(a._Checker.GetNil())
 
 	if a.IsNil(node) {
-		panic("node removed is nullptr")
+		panic("node removed is nil")
 	}
 	if a.Compare == nil {
 		panic("compare is nil")
@@ -248,7 +249,7 @@ func (a *RedBlackTree) Delete(node *RedBlackTreeNode) {
 
 			a.Transplant(next_node.GetRChild(), next_node, &a.Root) //将后继的右子剪切到后继的位置
 			next_node.SetRChild(node.GetRChild())                   //后继的右子设为node的右子
-			node.GetRChild().SetParent(next_node)                   //后继的右子设为node的右子
+			node.GetRChild().SetParent(next_node)
 			node.SetRChild(next_node)
 
 			a.Transplant(node.GetRChild(), node, &a.Root)
@@ -265,7 +266,7 @@ func (a *RedBlackTree) Delete(node *RedBlackTreeNode) {
 		y.Color = node.Color
 	}
 
-	a.PrintBlackColor("end delete ")
+	// a.PrintBlackColor("end delete ")
 	if y_color == COLOR_BLACK {
 		a.delete_fixup(x)
 	}
@@ -277,7 +278,7 @@ func (a *RedBlackTree) Delete(node *RedBlackTreeNode) {
  * @return: void
  */
 func (a *RedBlackTree) delete_fixup(x *RedBlackTreeNode) {
-	a.PrintBlackColor("delete fixup start ")
+	// a.PrintBlackColor("delete fixup start ")
 	if a.IsNil(x) {
 		return
 	}
@@ -342,7 +343,7 @@ func (a *RedBlackTree) delete_fixup(x *RedBlackTreeNode) {
 		x.Color = COLOR_BLACK
 	}
 
-	a.PrintBlackColor("end delete_fixup")
+	// a.PrintBlackColor("end delete_fixup")
 }
 
 /**

@@ -17,7 +17,7 @@
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-04 23:01:26
- * @LastEditTime: 2020-03-08 17:20:40
+ * @LastEditTime: 2020-03-13 14:04:59
  * @LastEditors:
 */
 
@@ -419,7 +419,7 @@ func (bt *BTree) PutNotFull(node *BTreeNode, entry *Pair) *Pair {
 *
 * @param key   - 键
 * @param value - 值
-* @return 如果B树中存在给定的键，则返回之前的值，否则null
+* @return 如果B树中存在给定的键，则返回之前的值，否则nil
  */
 func (bt *BTree) Put(e *Pair) *Pair {
 	root := bt.Root
@@ -438,7 +438,7 @@ func (bt *BTree) Put(e *Pair) *Pair {
 * 从B树中删除一个与给定键关联的项。
 *
 * @param key - 给定的键
-* @return 如果B树中存在给定键关联的项，则返回删除的项，否则null
+* @return 如果B树中存在给定键关联的项，则返回删除的项，否则nil
  */
 func (bt *BTree) Delete(key interface{}) (*Pair, error) {
 	return bt.DeleteFromNode(bt.Root, key)
@@ -451,7 +451,7 @@ func (bt *BTree) Delete(key interface{}) (*Pair, error) {
 *
 * @param node - 给定的节点
 * @param key  - 给定的键
-* @return 如果B树中存在给定键关联的项，则返回删除的项，否则null
+* @return 如果B树中存在给定键关联的项，则返回删除的项，否则nil
  */
 func (bt *BTree) DeleteFromNode(node *BTreeNode, key interface{}) (*Pair, error) {
 	// 该过程需要保证，对非根节点执行删除操作时，其关键字个数至少为t。

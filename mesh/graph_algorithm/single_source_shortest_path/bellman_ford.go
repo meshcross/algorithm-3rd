@@ -2,7 +2,7 @@
  * @Description: golang algorithm
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:18:53
- * @LastEditTime: 2020-03-05 12:02:00
+ * @LastEditTime: 2020-03-13 14:03:52
  * @LastEditors:
  */
 package SingleSourceShortestPath
@@ -78,7 +78,7 @@ func (a *BellmanFordShortestPath) ShortestPath(graph *Graph, source_id int) (boo
 
 	num := graph.N()
 	if source_id < 0 || source_id >= num || graph.Vertexes[source_id] == nil {
-		return false, errors.New("initialize_single_source error: source_id muse be in [0,N) and source vertex must not be nullptr!")
+		return false, errors.New("initialize_single_source error: source_id muse be in [0,N) and source vertex must not be nil!")
 	}
 	a.initializeSingleSource(graph, source_id)
 

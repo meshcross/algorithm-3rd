@@ -36,7 +36,7 @@ func NewRelabelToFront() *RelabelToFront {
 func (a *RelabelToFront) discharge(graph *Graph, u_id int, flow [][]int) error {
 
 	if graph == nil {
-		return errors.New("discharge error: graph must not be nullptr!")
+		return errors.New("discharge error: graph must not be nil!")
 	}
 	num := graph.N()
 	if u_id < 0 || u_id >= num {

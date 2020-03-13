@@ -60,7 +60,7 @@ func (l *List) Add(element *ListNode) {
  */
 func (l *List) FrontOf(element *ListNode) (*ListNode, error) {
 	if element == nil {
-		return nil, errors.New("front_of error: element must not be null!")
+		return nil, errors.New("front_of error: element must not be nil!")
 	}
 
 	var pre *ListNode = nil

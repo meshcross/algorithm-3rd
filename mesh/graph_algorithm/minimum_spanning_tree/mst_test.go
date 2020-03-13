@@ -74,12 +74,6 @@ func TestKruskal(t *testing.T) {
 		fmt.Println(fmt.Sprintf("b-EXPECT_EQ(%d,%d)", weight, 1))
 		fmt.Println(fmt.Sprintf("b-EXPECT_EQ(%v,%v)", edges, NewPair(0, 1)))
 
-		// auto node0=_1e_graph->vertexes.at(0)->node;
-		// auto node1=_1e_graph->vertexes.at(1)->node;
-		// ASSERT_TRUE(node0&&node0->parent);
-		// ASSERT_TRUE(node1&&node1->parent);
-		// EXPECT_EQ(node0->parent,node1); //tree_root:u, tree_root:v, rank小的挂在rank大的之下；若二者rank相等，则u挂在v下
-		// EXPECT_EQ(node1->parent,node1); //所以结点1是最终根结点
 	}
 	//************** 单链图 ******************
 	{
@@ -101,7 +95,7 @@ func TestKruskal(t *testing.T) {
 			iParent := vtx.Node.Parent
 			vtx_1 := ToSetVertex(_list_graph.Vertexes[1])
 			node1 := vtx_1.Node
-			fmt.Println(fmt.Sprintf("c-EXPECT_EQ(%v,%v)", iParent, node1)) //所以结点1是最终根结点mt.Println("c-EXPECT_EQ(_list_graph->vertexes.at(i)->node->parent,_list_graph->vertexes.at(1)->node)") //所以结点1是最终根结点
+			fmt.Println(fmt.Sprintf("c-EXPECT_EQ(%v,%v)", iParent, node1))
 		}
 		//检验添加边的数量和顺序
 		fmt.Println(fmt.Sprintf("c-EXPECT_EQ(%d,%d)", len(edges), len(result_edges)))

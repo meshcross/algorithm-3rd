@@ -1,5 +1,5 @@
 /*
- * @Description: 二叉搜索树，算法导论12章
+ * @Description: 第12章 二叉搜索树
  *				二叉搜索树是一种特殊的二叉树。在二叉树中的任何一个节点，该节点的左子节点值小于它；该节点的右子节点值大于它。
  *				该算法有个缺陷，经过多次插入和删除之后，有可能改变树的形态，变为类似如下的结构：
 					8
@@ -11,9 +11,10 @@
 							 20
 				这样的结构进行搜索，其搜索性能已经变为O(n)了
 				为了避免出现这样的情况，一般需要在二叉搜索树中加入平衡算法，以让树左右平衡
+
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:20:21
- * @LastEditTime: 2020-03-08 17:24:27
+ * @LastEditTime: 2020-03-13 14:04:49
  * @LastEditors:
 */
 package TreeAlgorithm
@@ -56,10 +57,10 @@ func (a *BinarySearchTree) Search(v interface{}, nodes ...ITreeNode) ITreeNode {
 	return node
 }
 
-//! min:在二叉搜索树中最小值的节点。
 /*!
-* \param node:从指定节点开始搜索（默认为树的根节点）
-* \return : 二叉树种的最小节点
+* @description:在二叉搜索树中最小值的节点。
+* @param node:从指定节点开始搜索（默认为树的根节点）
+* @return : 二叉树种的最小节点
 *
 * 在二叉搜索树中搜索最小值的节点。其中可以指定从哪个节点开始搜索。若不指定搜索节点，则默认为树的根节点。
 *
@@ -81,10 +82,10 @@ func (a *BinarySearchTree) Min(nodes ...ITreeNode) ITreeNode {
 	return node
 }
 
-//! max:在二叉搜索树中最大值的节点。
 /*!
-* \param node:从指定节点开始搜索（默认为树的根节点）
-* \return : 二叉树种的最大节点
+* @description:在二叉搜索树中最大值的节点。
+* @param node:从指定节点开始搜索（默认为树的根节点）
+* @return : 二叉树种的最大节点
 *
 * 在二叉搜索树中搜索最小值的节点。其中可以指定从哪个节点开始搜索。若不指定搜索节点，则默认为树的根节点
 *
@@ -98,7 +99,7 @@ func (a *BinarySearchTree) Max(nodes ...ITreeNode) ITreeNode {
 		node = nodes[0]
 	}
 	if a.IsNil(node) {
-		panic(" BinarySearchTree.Max nullptr")
+		panic(" BinarySearchTree.Max nil")
 	}
 	for !a.IsNil(node.GetRChild()) {
 		node = node.GetRChild()
@@ -106,10 +107,10 @@ func (a *BinarySearchTree) Max(nodes ...ITreeNode) ITreeNode {
 	return node
 }
 
-//! successor:二叉搜索树指定节点的后继节点。最近一个比node大的节点
-/*!
-* \param node:要搜索后继的节点
-* \return : 该节点的后继节点
+/*
+* @description:二叉搜索树指定节点的后继节点。最近一个比node大的节点
+* @param node:要搜索后继的节点
+* @return : 该节点的后继节点
 *
 * 给定二叉搜索树的某个节点，搜索其后继节点。所谓的某节点`node`的后继节点就是在二叉搜索树中，值大于等于`node`的所有节点中最小的那一个（排除它自身）。
 *
@@ -128,7 +129,7 @@ func (a *BinarySearchTree) Successor(nodes ...ITreeNode) ITreeNode {
 		node = nodes[0]
 	}
 	if a.IsNil(node) {
-		panic(" BinarySearchTree.Successor nullptr")
+		panic(" BinarySearchTree.Successor nil")
 	}
 
 	if !a.IsNil(node.GetRChild()) { //以右子节点为根的子树中的最小值节点就是`node`的后继节点
@@ -142,10 +143,10 @@ func (a *BinarySearchTree) Successor(nodes ...ITreeNode) ITreeNode {
 	return parent
 }
 
-//! Predecesor:二叉搜索树指定节点的前驱。最近一个比node小的节点
-/*!
-* \param node:要搜索前驱的节点
-* \return : 该节点的前驱节点
+/*
+* @description:二叉搜索树指定节点的前驱。最近一个比node小的节点
+* @param node:要搜索前驱的节点
+* @return : 该节点的前驱节点
 *
 * 给定二叉搜索树的某个节点，搜索其前驱节点。所谓的某节点`node`的前驱节点就是在二叉搜索树中，值小于`node`的所有节点中最大的那一个。
 *
@@ -164,7 +165,7 @@ func (a *BinarySearchTree) Predecesor(nodes ...ITreeNode) ITreeNode {
 		node = nodes[0]
 	}
 	if a.IsNil(node) {
-		panic(" SearchTree.Predecesor nullptr")
+		panic(" SearchTree.Predecesor nil")
 	}
 	if !a.IsNil(node.GetLChild()) { //以左子节点为根的子树中的最大值节点就是`node`的前驱节点
 		return a.Max(node.GetLChild())
@@ -177,14 +178,14 @@ func (a *BinarySearchTree) Predecesor(nodes ...ITreeNode) ITreeNode {
 	return parent
 }
 
-//! insert:向二叉搜索树中插入节点。
-/*!
-* \param node:要插入的节点
-* \return : void
+/*
+* @description:向二叉搜索树中插入节点。
+* @param node:要插入的节点
+* @return : void
 *
 * 给定新节点`node`，将该节点插入到二叉搜索树中。
 *
-* 算法：遍历二叉搜索树，若当前节点的值大于`node`的值，则向左侧遍历；若当前节点值小于`node`的值，则向右侧遍历。直到碰到`nullptr`则挂载该节点
+* 算法：遍历二叉搜索树，若当前节点的值大于`node`的值，则向左侧遍历；若当前节点值小于`node`的值，则向右侧遍历。直到碰到`nil`则挂载该节点
 *
 * 算法时间复杂度O(h)，空间复杂度O(1)。其中h为树的高度
 * 由于SearTree是有特性的，所以每个节点有固定的位置，这里需要找个这个位置，然后将新节点放置在该位置
@@ -226,10 +227,10 @@ func (a *BinarySearchTree) Insert(node ITreeNode) {
 	}
 }
 
-//! delete:从二叉搜索树中删除节点。
-/*!
-* \param node:要删除的节点
-* \return : void
+/*
+* @description:从二叉搜索树中删除节点。
+* @param node:要删除的节点
+* @return : void
 *
 * 给定节点`node`，从二叉搜索树中删除它。如果`node`不在二叉搜索树中则抛出异常。
 *
@@ -251,7 +252,7 @@ func (a *BinarySearchTree) Insert(node ITreeNode) {
  */
 func (a *BinarySearchTree) Delete(node *BinaryTreeNode) error {
 	if a.IsNil(node) {
-		return errors.New("node removed is nullptr")
+		return errors.New("node removed is nil")
 	}
 	if a.Compare == nil {
 		return errors.New("compare is nil")

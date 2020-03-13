@@ -196,7 +196,7 @@ func (a *GenericPushRelabel) MaxFlow(graph *Graph, src_id, dst_id int) ([][]int,
  */
 func (a *GenericPushRelabel) initialize_preflow(graph *Graph, src_id int, flow [][]int) error {
 	if graph == nil {
-		return errors.New("initialize_preflow error: graph must not be nullptr!")
+		return errors.New("initialize_preflow error: graph must not be nil!")
 	}
 	num := graph.N()
 	if src_id < 0 || src_id >= num {

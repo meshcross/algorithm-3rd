@@ -68,11 +68,11 @@ func (a *GraphBFS) toBFSVertex(vtx IVertex) *BFSVertex {
 func (a *GraphBFS) Search(graph *Graph, source_id int, pre_action BFSActionFunc, post_action BFSActionFunc) error {
 
 	if graph == nil {
-		return errors.New("breadth_first_search error: graph must not be nullptr!")
+		return errors.New("breadth_first_search error: graph must not be nil!")
 	}
 	num := graph.N()
 	if source_id < 0 || source_id >= num || graph.Vertexes[source_id] == nil {
-		return errors.New("breadth_first_search error: source_id muse belongs [0,N) and graph->vertexes[source_id] must not be nullptr!")
+		return errors.New("breadth_first_search error: source_id muse belongs [0,N) and graph.Vertexes[source_id] must not be nil!")
 	}
 	v_queue := NewQueue()
 	unlimit := Unlimit()

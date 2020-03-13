@@ -2,7 +2,7 @@
  * @Description: golang algorithm
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:20:14
- * @LastEditTime: 2020-03-05 12:19:42
+ * @LastEditTime: 2020-03-13 14:04:42
  * @LastEditors:
  */
 package TreeAlgorithm
@@ -87,20 +87,20 @@ func (a *BinaryTreeNode) ToXML() string {
 	if a._Parent != nil {
 		str += fmt.Sprintf("\t <parent>%s</parent>", a._Parent.GetKey())
 	} else {
-		str += "\t <parent>null_ptr</parent>"
+		str += "\t <parent>nil</parent>"
 	}
 	left := ""
 	right := ""
 	if a._LChild != nil {
 		left = fmt.Sprintf("\n\t <left_child>%s</left_child>", a._LChild.GetKey())
 	} else {
-		left = fmt.Sprintf("\n\t <left_child>nullptr</left_child>")
+		left = fmt.Sprintf("\n\t <left_child>nil</left_child>")
 	}
 
 	if a._RChild != nil {
 		right = fmt.Sprintf("\n\t<right_child>%s</right_child>", a._RChild.GetKey())
 	} else {
-		right = fmt.Sprintf("\n\t<right_child>nullptr</right_child>")
+		right = fmt.Sprintf("\n\t<right_child>nil</right_child>")
 	}
 
 	str = str + left + right + "\n</node>"
@@ -112,7 +112,7 @@ func (a *BinaryTreeNode) ToString() string {
 
 	parent_str := ""
 	if a._Parent == nil {
-		parent_str = fmt.Sprintf("parent:%s", "nullptr")
+		parent_str = fmt.Sprintf("parent:%s", "nil")
 	} else {
 		parent_str = fmt.Sprintf("parent:%s", a._Parent.GetKey())
 	}
@@ -123,13 +123,13 @@ func (a *BinaryTreeNode) ToString() string {
 	if a._LChild != nil {
 		left_str = fmt.Sprintf("%d", a._LChild.GetKey())
 	} else {
-		left_str = "nullptr"
+		left_str = "nil"
 	}
 
 	if a._RChild != nil {
 		right_str = fmt.Sprintf("%d", a._RChild.GetKey())
 	} else {
-		right_str = "nullptr"
+		right_str = "nil"
 	}
 
 	str := ""

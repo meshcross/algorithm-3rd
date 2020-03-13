@@ -2,7 +2,7 @@
  * @Description: 第15章 15.1，刚调切割问题
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-29 18:26:09
- * @LastEditTime: 2020-03-06 13:02:19
+ * @LastEditTime: 2020-03-13 15:15:02
  * @LastEditors:
  */
 package DynamicProgrammingAlgorithm
@@ -27,19 +27,22 @@ func NewCutDP() *CutDP {
 **/
 func (a *CutDP) BottomUpCut(p []int, n int) int {
 	len_p := len(p)
-	if n > len_p {
-		return -1
+	if len_p <= 0 || n <= 0 {
+		return 0
 	}
 
+	//r记录1-n每个长度的最大收益，用于保存每个子问题的解
 	r := make([]int, n+1)
-	r[0] = 0
+	r[0] = 0 //长度为0的钢条收益为0
 	unlimit := Unlimit()
-	for j := 1; j <= n; j++ {
+	for j := 1; j <= n; j++ { //需要求解每个规模为j的子问题
 		q := -unlimit
-		for i := 1; i <= j; i++ {
+		for i := 1; i <= j; i++ { //对于已经确定的j，循环求解最优解
+			//长度为i的价格为p[i-1]，长度为i，剩余长度为j-i，j-i长度的最优解为r[j-i]
+			//如果p[i-1] + r[j-1]的总价更高>q，则需要划分一段长度为i的钢条，否则不需要长度为i的钢条
 			q = MaxInt(q, p[i-1]+r[j-i])
 		}
-		r[j] = q
+		r[j] = q //将j的子问题的解存入r[j]
 	}
 	return r[n]
 }

@@ -45,7 +45,7 @@ func NewTopologySort() *TopologySort {
 func (a *TopologySort) Sort(graph *Graph) ([]int, error) {
 
 	if graph == nil {
-		return nil, errors.New("topology_sort error: graph must not be nullptr!")
+		return nil, errors.New("topology_sort error: graph must not be nil!")
 	}
 
 	sorted_result := []int{}

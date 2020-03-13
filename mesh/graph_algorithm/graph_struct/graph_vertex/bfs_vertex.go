@@ -2,7 +2,7 @@
  * @Description: golang algorithm
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-18 10:30:35
- * @LastEditTime: 2020-03-05 11:48:31
+ * @LastEditTime: 2020-03-13 14:03:26
  * @LastEditors:
  */
 package GraphVertex
@@ -48,7 +48,7 @@ func (a *BFSVertex) SetSource() {
  */
 func (a *BFSVertex) SetFound(v_parent *BFSVertex) error {
 	if v_parent == nil {
-		return errors.New("set_found error: v_parent must not be null!")
+		return errors.New("set_found error: v_parent must not be nil!")
 	}
 
 	a.Color = COLOR_GRAY

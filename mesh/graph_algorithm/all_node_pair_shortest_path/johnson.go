@@ -32,7 +32,7 @@ func NewJohnsonSP() *JohnsonSP {
 func (a *JohnsonSP) graph_add_one_vertex(graph *Graph) (*Graph, error) {
 
 	if graph == nil {
-		return nil, errors.New("graph_plus_1v error: graph must not be nullptr!")
+		return nil, errors.New("graph_add_one_vertex error: graph must not be nil!")
 	}
 	num := graph.N()
 	invalid_weight := graph.Matrix.InvalidWeight()
@@ -121,7 +121,7 @@ func (a *JohnsonSP) graph_add_one_vertex(graph *Graph) (*Graph, error) {
 func (a *JohnsonSP) ShortestPath(graph *Graph) ([][]int, error) {
 
 	if graph == nil {
-		return nil, errors.New("johnson error: graph must not be nullptr!")
+		return nil, errors.New("johnson error: graph must not be nil!")
 	}
 
 	//*******************  第一阶段 重赋权值  **************

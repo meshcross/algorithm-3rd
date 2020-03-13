@@ -2,7 +2,7 @@
  * @Description: 二叉树，以及二叉树的前序遍历/中序遍历/后序遍历，左旋转/右旋转，剪切
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:20:07
- * @LastEditTime: 2020-03-05 12:19:32
+ * @LastEditTime: 2020-03-13 12:41:11
  * @LastEditors:
  */
 package TreeAlgorithm
@@ -46,7 +46,11 @@ func NewBinaryTree() *BinaryTree {
 	return &BinaryTree{_Checker: &BinaryTreeChecker{}}
 }
 
-//红黑树中有设定伪结点，并不是真的为Nil，所以抽象出一层判定Nil
+/**
+ * @description: 红黑树中有设定伪结点，并不是真的为Nil，所以抽象出一层判定Nil
+ * @param v :ITreeNode
+ * @return:
+ */
 func (a *BinaryTree) IsNil(v ITreeNode) bool {
 	return a._Checker.IsNil(v)
 }
@@ -54,8 +58,12 @@ func (a *BinaryTree) GetNil() ITreeNode {
 	return a._Checker.GetNil()
 }
 
-//!inorder_walk：二叉树的中序遍历
-/*!
+/*
+* @description:二叉树的中序遍历
+* @param root：从根节点开始遍历
+* @param  action:回调函数，每次有节点被访问到就会调用该回调函数
+* @return void
+*
 * 本函数执行对二叉树的中序遍历，遍历时执行指定操作
 * 算法：
 * - 对左子节点前序遍历
@@ -78,8 +86,11 @@ func (a *BinaryTree) InOrder(root ITreeNode, action BinaryTreeNodeFunc) {
 	}
 }
 
-//!preorder_walk：二叉树的前序遍历
 /*!
+* @description:二叉树的前序遍历
+* @param root：从根节点开始遍历
+* @param  action:回调函数，每次有节点被访问到就会调用该回调函数
+* @return void
 * 本函数执行对二叉树的前序遍历，遍历时执行指定操作
 * 算法：
 * - 对本节点执行操作
@@ -102,8 +113,11 @@ func (a *BinaryTree) PreOrder(root ITreeNode, action BinaryTreeNodeFunc) {
 	}
 }
 
-//!postorder_walk：二叉树的后序遍历
 /*!
+* @description:二叉树的后序遍历
+* @param root：从根节点开始遍历
+* @param  action:回调函数，每次有节点被访问到就会调用该回调函数
+* @return void
 * 本函数执行对二叉树的后序遍历，遍历时执行指定操作。
 * 算法：
 *
@@ -127,9 +141,13 @@ func (a *BinaryTree) PostOrder(root ITreeNode, action BinaryTreeNodeFunc) {
 	}
 }
 
-//!left_rotate：二叉树的左旋转操作
+//!left_rotate：
 /*!
-
+* @description：二叉树的左旋转操作
+* @param
+* @param
+* @return
+*
 * 本函数执行二叉树进行左旋转。设node为被旋转的点，l_node为它的左子节点，r_node为它的右子节点。
 * 则旋转的效果是：r_node取代了node的位置；而node现在挂靠在r_node的左子；r_node原来的左子现在成为node的右子
 *
@@ -232,12 +250,12 @@ root节点可能发生变化
 *                 node_src     node_dst         ---剪切 -->               node_src      node_src        node_dst
 *                 //   \\      //    \\                                 //     \\      //     \\        //     \\
 * </pre></code>
-* 操作完成之后，原始的src.parent(old_parent)中的左或者右节点依然指向src，dst.parent依然指向没有改变
+*
 * 时间复杂度O(1)，空间复杂度O(1)
 */
 func (a *BinaryTree) Transplant(src ITreeNode, dst ITreeNode, root *ITreeNode) error {
 	if a.IsNil(dst) {
-		return errors.New("dst is nullptr ")
+		return errors.New("dst is nil ")
 	}
 	if !a.IsNil(src) { //替换掉parent
 		src.SetParent(dst.GetParent())

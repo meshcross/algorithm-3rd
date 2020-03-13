@@ -50,7 +50,7 @@ func (a *GraphDFS) toBFSVertext(vtx IVertex) *DFSVertex {
 
 func (a *GraphDFS) Search(graph *Graph, pre_action, post_action, pre_root_action, post_root_action DFSActionFunc, search_order []int) error {
 	if graph == nil {
-		return errors.New("depth_first_search error: graph must not be nullptr!")
+		return errors.New("depth_first_search error: graph must not be nil!")
 	}
 
 	num := graph.N()
@@ -121,12 +121,12 @@ func (a *GraphDFS) Search(graph *Graph, pre_action, post_action, pre_root_action
 func (a *GraphDFS) Visit(graph *Graph, v_id, time int, pre_action DFSActionFunc, post_action DFSActionFunc) error {
 
 	if graph == nil {
-		return errors.New("visit error: graph must not be nullptr!")
+		return errors.New("visit error: graph must not be nil!")
 	}
 
 	num := graph.N()
 	if v_id < 0 || v_id >= num || graph.Vertexes[v_id] == nil {
-		return errors.New("visit error: v_id muse belongs [0,N) and graph->vertexes[v_id] must not be nullptr!")
+		return errors.New("visit error: v_id muse belongs [0,N) and graph.Vertexes[v_id] must not be nil!")
 	}
 
 	time++
