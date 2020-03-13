@@ -21,7 +21,7 @@
 *
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:19:41
- * @LastEditTime: 2020-03-13 09:41:30
+ * @LastEditTime: 2020-03-13 10:47:16
  * @LastEditors:
 */
 package StringMatchingAlgorithm
@@ -147,7 +147,7 @@ func (a *KmpMatch) Match(strT, strP string) ([]int, error) {
 		//参考finite_automation的算法，当字符匹配到strT[i]的时候，q只能有两种取值1或者q+1
 		//所以for循环之后q一定为0
 		for q > 0 && strP[q] != strT[i] { //next char does not match
-			q = pai[q]
+			q = pai[q-1]
 		}
 		//确实发生P[q+1]==T[i]，这里从0计数
 		if strP[q] == strT[i] { //next char matches
@@ -168,6 +168,10 @@ func (a *KmpMatch) Match(strT, strP string) ([]int, error) {
 * @param strT: 在哪个文本中查找
 * @param strP: 模式pattern
 * @return: 所有查找到的位置
+*
+* 需要设计好测试用例，考察一些边缘情况
+* T : bcabcabcabdbcbabx
+* P : abcabd
 */
 func (a *KmpMatch) MatchX(strT, strP string) ([]int, error) {
 
@@ -191,11 +195,11 @@ func (a *KmpMatch) MatchX(strT, strP string) ([]int, error) {
 	j := 0
 	for i := 0; i < lenT; i++ {
 
-		if strP[j] != strT[i] {
+		if j > 0 && strP[j] != strT[i] {
 			//最关键的地方在这里，相当于失败时候的next函数
 			//当在j的位置发生匹配失败的时候，之前的(j-1)位的k值就是可以重复利用的元素个数
-			//模式匹配失败的时候，j需要移动到pai[j]的位置
-			j = pai[j]
+			//模式匹配失败的时候，j需要移动到pai[j-1]的位置
+			j = pai[j-1]
 		}
 		if strP[j] == strT[i] {
 			j++
