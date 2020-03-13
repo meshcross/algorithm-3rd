@@ -21,12 +21,14 @@
 *
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:19:41
- * @LastEditTime: 2020-03-13 00:29:11
+ * @LastEditTime: 2020-03-13 09:41:30
  * @LastEditors:
 */
 package StringMatchingAlgorithm
 
-import "errors"
+import (
+	"errors"
+)
 
 type KmpMatch struct {
 }
@@ -189,19 +191,14 @@ func (a *KmpMatch) MatchX(strT, strP string) ([]int, error) {
 	j := 0
 	for i := 0; i < lenT; i++ {
 
-		if j < 0 || strP[j] == strT[i] {
+		if strP[j] != strT[i] {
+			//最关键的地方在这里，相当于失败时候的next函数
+			//当在j的位置发生匹配失败的时候，之前的(j-1)位的k值就是可以重复利用的元素个数
+			//模式匹配失败的时候，j需要移动到pai[j]的位置
+			j = pai[j]
+		}
+		if strP[j] == strT[i] {
 			j++
-		} else {
-			if j > 0 {
-				//最关键的地方在这里，相当于失败时候的next函数
-				//当在j的位置发生匹配失败的时候，之前的(j-1)位的k值就是可以重复利用的元素个数
-				//模式匹配失败的时候，j需要向后移动的位数 dx = q - pai(q)，只和之前已匹配的j位有关
-				//需要特别注意，j有两层意思，1、当前失败的元素下标是j 2、前面有j个元素匹配成功了
-				//j会移动到j-dx的位置，j-dx = j - (j-pai(j)) = pai(j)的位置
-				j = pai[j]
-			} else {
-				j = -1
-			}
 		}
 
 		if j == lenP { //找到有效偏移点

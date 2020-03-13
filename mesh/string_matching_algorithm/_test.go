@@ -2,7 +2,7 @@
  * @Description: golang algorithm
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-05 22:48:50
- * @LastEditTime: 2020-03-05 22:51:29
+ * @LastEditTime: 2020-03-13 09:42:01
  * @LastEditors:
  */
 package StringMatchingAlgorithm
@@ -35,4 +35,24 @@ func TestKmpMatch(t *testing.T) {
 	expect := []int{3}
 
 	fmt.Println(vec, err, expect)
+
+	m := NewKmpMatch()
+
+	T := []string{
+		"aabcbababacaabcbabx",
+		"txasdgaabcbababacaabcbabx",
+		"abcbababacaabcbabx",
+		"aaaabcbababacaabcbab",
+		"bcbababacaabcbabx",
+	}
+	P := "abcbab"
+
+	for k, v := range T {
+		vec1, err1 := m.Match(v, P)
+		vec2, err2 := m.MatchX(v, P)
+
+		fmt.Println("ver1:", k, vec1, err1)
+		fmt.Println("ver2:", k, vec2, err2)
+	}
+
 }
