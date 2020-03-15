@@ -1,3 +1,10 @@
+/*
+ * @Description: 最小生成树测试
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-25 23:09:00
+ * @LastEditTime: 2020-03-14 16:02:47
+ * @LastEditors:
+ */
 package MinimumSpanningTree
 
 import (
@@ -60,7 +67,7 @@ func TestKruskal(t *testing.T) {
 		pre_action := func(id1, id2 int) {
 			edges = append(edges, NewPair(id1, id2))
 		}
-		weight, _ := kruskal.Generate(_1v_graph, pre_action, nil)
+		weight, _, _ := kruskal.Generate(_1v_graph, pre_action, nil)
 		fmt.Println(fmt.Sprintf("a-EXPECT_EQ(%d,%d)", weight, 0))
 		fmt.Println(fmt.Sprintf("a-EXPECT_EQ(%d,%d)", len(edges), 0))
 	}
@@ -70,7 +77,7 @@ func TestKruskal(t *testing.T) {
 		pre_action := func(id1, id2 int) {
 			edges = append(edges, NewPair(id1, id2))
 		}
-		weight, _ := kruskal.Generate(_1e_graph, pre_action, nil)
+		weight, _, _ := kruskal.Generate(_1e_graph, pre_action, nil)
 		fmt.Println(fmt.Sprintf("b-EXPECT_EQ(%d,%d)", weight, 1))
 		fmt.Println(fmt.Sprintf("b-EXPECT_EQ(%v,%v)", edges, NewPair(0, 1)))
 
@@ -81,7 +88,7 @@ func TestKruskal(t *testing.T) {
 		pre_action := func(id1, id2 int) {
 			edges = append(edges, NewPair(id1, id2))
 		}
-		weight, _ := kruskal.Generate(_list_graph, pre_action, nil)
+		weight, _, _ := kruskal.Generate(_list_graph, pre_action, nil)
 		fmt.Println(fmt.Sprintf("c-EXPECT_EQ(%d,%d)", weight, (K_NUM-1)*K_NUM/2))
 
 		result_edges := []*Pair{}
@@ -112,7 +119,7 @@ func TestKruskal(t *testing.T) {
 		pre_action := func(id1, id2 int) {
 			edges = append(edges, NewPair(id1, id2))
 		}
-		weight, _ := kruskal.Generate(_all_edges_graph, pre_action, nil)
+		weight, _, _ := kruskal.Generate(_all_edges_graph, pre_action, nil)
 		fmt.Println(fmt.Sprintf("d-EXPECT_EQ(%d,%d)", weight, (K_NUM-1)*K_NUM/2))
 		result_edges := []*Pair{}
 		for i := 1; i < K_NUM; i++ {
@@ -137,7 +144,7 @@ func TestKruskal(t *testing.T) {
 	}
 }
 
-func testPrim() {
+func TestPrim(t *testing.T) {
 	P_NUM := 10
 	creator := func(key, id int) IVertex {
 		ptr := NewVertex(key, id)
@@ -187,7 +194,7 @@ func testPrim() {
 		pre_action := func(id int) {
 			ids = append(ids, id)
 		}
-		weight, _ := prim.Generate(_1v_graph, 0, pre_action, nil)
+		weight, _, _ := prim.Generate(_1v_graph, 0, pre_action, nil)
 		fmt.Println(fmt.Sprintf("a-EXPECT_EQ(%d,%d)", weight, 0))
 		fmt.Println(fmt.Sprintf("a-EXPECT_EQ(%d,%d)", len(ids), 0))
 	}
@@ -197,7 +204,7 @@ func testPrim() {
 		pre_action := func(id int) {
 			ids = append(ids, id)
 		}
-		weight, _ := prim.Generate(_1e_graph, 0, pre_action, nil)
+		weight, _, _ := prim.Generate(_1e_graph, 0, pre_action, nil)
 		fmt.Println(fmt.Sprintf("b-EXPECT_EQ(%d,%d)", weight, 1))
 		fmt.Println(fmt.Sprintf("b-EXPECT_EQ(%v,%v)", ids, []int{0, 1}))
 	}
@@ -207,7 +214,7 @@ func testPrim() {
 		pre_action := func(id int) {
 			ids = append(ids, id)
 		}
-		weight, _ := prim.Generate(_list_graph, 0, pre_action, nil)
+		weight, _, _ := prim.Generate(_list_graph, 0, pre_action, nil)
 		fmt.Println(fmt.Sprintf("c-EXPECT_EQ(%d,%d)", weight, (P_NUM-1)*P_NUM/2))
 
 		result_ids := []int{}
@@ -225,7 +232,7 @@ func testPrim() {
 		pre_action := func(id int) {
 			ids = append(ids, id)
 		}
-		weight, _ := prim.Generate(_all_edges_graph, 0, pre_action, nil)
+		weight, _, _ := prim.Generate(_all_edges_graph, 0, pre_action, nil)
 		fmt.Println(fmt.Sprintf("e-EXPECT_EQ(%d,%d)", weight, (P_NUM-1)*P_NUM/2))
 		result_ids := []int{}
 		for i := 0; i < P_NUM; i++ {

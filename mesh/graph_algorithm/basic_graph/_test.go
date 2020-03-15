@@ -10,6 +10,9 @@ import (
 	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
 )
 
+/**
+ * @description: 无向图的连通分量
+ */
 func TestConnectedComponent(t *testing.T) {
 	C_NUM := 10
 	creator := func(key, id int) IVertex {
@@ -41,6 +44,9 @@ func TestConnectedComponent(t *testing.T) {
 	}
 }
 
+/**
+ * @description: 图的广度优先搜索
+ */
 func TestGraphBFS(t *testing.T) {
 	NUM := 10
 	creator := func(key, id int) IVertex {
@@ -110,6 +116,9 @@ func TestGraphBFS(t *testing.T) {
 	}
 }
 
+/**
+ * @description: 图的深度优先搜索
+ */
 func TestGraphDFS(t *testing.T) {
 	NUM := 10
 	creator := func(key, id int) IVertex {
@@ -226,6 +235,9 @@ func TestGraphDFS(t *testing.T) {
 	}
 }
 
+/**
+ * @description: 图的强连通分量
+ */
 func TestStrongConnectedComponent(t *testing.T) {
 	SCC_N := 10
 	creator := func(key, id int) IVertex {
@@ -256,7 +268,6 @@ func TestStrongConnectedComponent(t *testing.T) {
 
 	setor := &StrongConnectedComponent{}
 	res, _ := setor.SetStrongConnectedComponent(_list_graph)
-	// typedef  DFS_Vertex<double>::VIDType VIDType;
 	//****** 测试一条链边的图**********
 	fmt.Println(fmt.Sprintf("a-EXPECT_EQ(%d,%d)", len(res), 0))
 

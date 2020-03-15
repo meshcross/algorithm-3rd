@@ -1,27 +1,11 @@
-package MinimumSpanningTree
+/*
+ * @Description: 第23章23.2节 最小生成树的Prim算法
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-18 10:34:44
+ * @LastEditTime: 2020-03-14 16:02:20
+ * @LastEditors:
 
-import (
-	"errors"
 
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
-	. "github.com/meshcross/algorithm-3rd/mesh/queue_algorithm"
-)
-
-//!prim：最小生成树的Prim算法，算法导论23章23.2节
-/*!
-* \param graph:图，必须非空
-* \param source_id：最小生成树的根结点`id`，必须有效。若无效则抛出异常
-* \param pre_action:一个可调用对象，在每次从最小优先级队列中弹出最小顶点时立即调用，调用参数为该顶点的`id`。默认为空操作，即不进行任何操作
-* \param post_action:一个可调用对象，在每次从最小优先级队列中弹出最小顶点并处理完它的边时立即调用，调用参数为该顶点的`id`。默认为空操作，即不进行任何操作
-* \return: 最小生成树的权重
-*
-* `source_id`在以下情况下无效：
-*
-* - `source_id`不在区间`[0,N)`之间时，`source_id`无效
-* - `graph`中不存在某个顶点的`id`等于`source_id`时，`source_id`无效
-*
 * ## 最小生成树
 *
 * 最小生成树：对于一个连通无向图G=(V,E)，对于每一条边(u,v)属于E都赋予了一个权重w(u,v)。我们希望找出一个无环子集T，其中T为E的子集，使得所有的顶点V位于T中，
@@ -41,6 +25,40 @@ import (
 * 为了有效地实现Prim算法，需要一种快速的方法来选择一条新的边以便加入到由集合A中的边所构成的树中。在算法执行过程中，所有不在树A中的结点都存放在一个基于key的属性的最小优先级队列Q中。
 * 对于每个结点v，属性v.key保存的是连接v和树中结点的所有边中最小边的权重。若这样的边不存在则权重为正无穷。属性v.pai给出的是结点v在树中的父结点。
 *
+*/
+package MinimumSpanningTree
+
+import (
+	"errors"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
+	. "github.com/meshcross/algorithm-3rd/mesh/queue_algorithm"
+)
+
+type PrimMST struct {
+}
+
+func NewPrimMST() *PrimMST {
+	return &PrimMST{}
+}
+
+type PrimMSTActionFunc func(id int)
+
+/*!
+* @description:最小生成树的Prim算法
+* @param graph:图，必须非空
+* @param source_id：最小生成树的根结点`id`
+* @param pre_action:在每次从最小优先级队列中弹出最小顶点时立即调用，回调函数
+* @param post_action:在每次从最小优先级队列中弹出最小顶点并处理完它的边时立即调用，调用参数为该顶点的`id`，回调函数
+* @return: 最小生成树的权重
+*
+* `source_id`在以下情况下无效：
+*
+* - `source_id`不在区间`[0,N)`之间时，`source_id`无效
+* - `graph`中不存在某个顶点的`id`等于`source_id`时，`source_id`无效
+*
 * ### 算法步骤
 *
 * - 初始化：将所有结点的key设为正无穷，所有结点的父结点置为空(结点构造时，父结点默认为空）
@@ -55,40 +73,17 @@ import (
 *
 * Prim总时间代价为O(VlgV+ElgV)=O(ElgV)(使用最小堆实现的最小优先级队列），或者O(E+VlgV)（使用斐波那契堆实现最小优先级队列）
  */
-
-type PrimMST struct {
-}
-
-func NewPrimMST() *PrimMST {
-	return &PrimMST{}
-}
-
-type PrimMSTActionFunc func(id int)
-
-// func NodeCompareFunc_VertexLessThan(vtx1, vtx2 IVertex) int {
-// 	if vtx1 == nil || vtx2 == nil {
-// 		return -1
-// 	}
-// 	if vtx1.GetKey() < vtx2.GetKey() {
-// 		return 1
-// 	}
-// 	if vtx1.GetKey() == vtx2.GetKey() {
-// 		return 0
-// 	}
-// 	return -1
-// }
-
-func (a *PrimMST) Generate(graph *Graph, source_id int, pre_action, post_action PrimMSTActionFunc) (int, error) {
+func (a *PrimMST) Generate(graph *Graph, source_id int, pre_action, post_action PrimMSTActionFunc) (int, []*Tuple, error) {
 
 	if graph == nil {
-		return -1, errors.New("prim error: graph must not be nil!")
+		return -1, nil, errors.New("prim error: graph must not be nil!")
 	}
 
 	num := graph.N()
 	vertex := graph.Vertexes[source_id]
 
 	if source_id < 0 || source_id > num || vertex == nil {
-		return -1, errors.New("prim error: source_id is not in limit!")
+		return -1, nil, errors.New("prim error: source_id is not in limit!")
 	}
 
 	//最小优先队列
@@ -109,6 +104,7 @@ func (a *PrimMST) Generate(graph *Graph, source_id int, pre_action, post_action 
 	}
 
 	weight := 0
+	ret_edges := []*Tuple{}
 	for !q.IsEmpty() {
 
 		u, _ := q.ExtractMin()
@@ -120,18 +116,19 @@ func (a *PrimMST) Generate(graph *Graph, source_id int, pre_action, post_action 
 		if pre_action != nil {
 			pre_action(minNode.GetID())
 		}
-		edges := graph.EdgeTuples()
+		edges, _ := graph.VertexEdgeTuples(ToInt(minNode.GetKey())) //graph.EdgeTuples()
 		for _, edge := range edges {
 			other_id := edge.Second
 			other_vtx := graph.Vertexes[other_id]
 			other_weight := edge.Third
 
 			index := q.ElementIndex(other_vtx)
+			//如果key不相等，则还没有访问过
 			if index >= 0 && other_weight < other_vtx.GetKey() {
 				other_vtx.SetParent(minNode)
 				other_vtx.SetKey(other_weight)
+				ret_edges = append(ret_edges, edge)
 
-				//q.DecreateKey(index, other_weight)
 				q.DecreateKey(index, other_vtx)
 			}
 		}
@@ -142,5 +139,5 @@ func (a *PrimMST) Generate(graph *Graph, source_id int, pre_action, post_action 
 		weight += minNode.GetKey()
 	}
 
-	return weight, nil
+	return weight, ret_edges, nil
 }

@@ -1,17 +1,12 @@
-package MaxFlow
+/*
+ * @Description: 第26章26.2节 最大流 ford fulkerson算法
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-10 22:18:33
+ * @LastEditTime: 2020-03-15 15:37:34
+ * @LastEditors:
 
-import (
-	"errors"
 
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/basic_graph"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
-)
-
-//!MaxFlow：最大流的ford_fulkerson算法。算法导论26章26.2节
-/*!
-* 最大流问题：给定流网络G、一个源结点s、一个汇点t,找出值最大的一个流
+ * 最大流问题：给定流网络G、一个源结点s、一个汇点t,找出值最大的一个流
 *
 * ## ford_fulkerson算法
 *
@@ -45,6 +40,35 @@ import (
 * - 残余网络Gf不包括任何增广路径
 * - |f|=c(S,T)，其中(S,T)是流网络G的某个切割
 *
+
+*/
+package MaxFlow
+
+import (
+	"errors"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/basic_graph"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
+)
+
+type FordFulkerson struct {
+}
+
+type FordFulkersonActionFunc func(id int)
+
+func NewFordFulkerson() *FordFulkerson {
+	return &FordFulkerson{}
+}
+
+/**
+* @description:单源最短路径之  ford fulkerson算法
+* @param graph:指定流网络,必须非空
+* @param src_id: 流的源点
+* @param dst_id: 流的汇点
+* @return: 最大流矩阵,error
+
 * ### 算法步骤
 *
 * ford_fulkerson算法循环增加流的值。在开始的时候对于所有的结点u,v属于V，f(u,v)=0。在每一轮迭代中，
@@ -69,34 +93,19 @@ import (
 *
 *
  */
-type FordFulkerson struct {
-}
-
-type FordFulkersonActionFunc func(id int)
-
-func NewFordFulkerson() *FordFulkerson {
-	return &FordFulkerson{}
-}
-
-/**
-* \param graph:指定流网络,必须非空
-* \param src_id: 流的源点
-* \param dst_id: 流的汇点
-* \return: 最大流矩阵,error
-**/
 func (a *FordFulkerson) MaxFlow(graph *Graph, src_id, dst_id int) ([][]int, error) {
 
 	if graph == nil {
-		return nil, errors.New("FordFulkerson error: graph must not be nil!")
+		return nil, errors.New("MaxFlow error: graph must not be nil!")
 	}
 
 	num := graph.N()
 	if src_id < 0 || src_id >= num || graph.Vertexes[src_id] == nil {
-		return nil, errors.New("FordFulkerson error: src_id muse belongs [0,N) and src vertex must not be nil!")
+		return nil, errors.New("MaxFlow error: src_id muse belongs [0,N) and src vertex must not be nil!")
 	}
 
 	if dst_id < 0 || dst_id >= num || graph.Vertexes[dst_id] == nil {
-		return nil, errors.New("FordFulkerson error: dst_id muse belongs [0,N) and dst vertex must not be nil!")
+		return nil, errors.New("MaxFlow error: dst_id muse belongs [0,N) and dst vertex must not be nil!")
 	}
 
 	flow := make([][]int, num)
@@ -113,10 +122,12 @@ func (a *FordFulkerson) MaxFlow(graph *Graph, src_id, dst_id int) ([][]int, erro
 	var graphF *Graph = nil
 	bfs := NewGraphBFS()
 	for {
-		graphF, _ = a.getResidulalNetwork(graph, flow) //创建残余网络
+		//************ 创建残余网络  *************
+
+		graphF, _ = a.getResidulalNetwork(graph, flow)
 		//************ 寻找增广路径  *************
 
-		bfs.Search(graphF, src_id, nil, nil)
+		bfs.Search(graphF, src_id, nil, nil) //search会设定parent属性，然后GetPath查找一下
 		path, _ := GetPath(graphF.Vertexes[src_id], graphF.Vertexes[dst_id])
 		path_len := len(path)
 		if path_len == 0 {
@@ -149,12 +160,11 @@ func (a *FordFulkerson) MaxFlow(graph *Graph, src_id, dst_id int) ([][]int, erro
 	return flow, nil
 }
 
-//!getResidulalNetwork：根据指定流网络生成一个残余网络。算法导论26章26.2节
 /*!
-*
-* \param graph:指定流网络
-* \param flow: 一个流
-* \return: 残余网络
+* @description:根据指定流网络生成一个残余网络 ， graph.E - flow即可
+* @param graph:指定流网络
+* @param flow: 一个流
+* @return: 残余网络
 *
 * ## 残余网络
 * 给定网络G(V,E)和流量f，残余网络Gf(V,Ef)由那些仍有空间对流量进行调整的边构成。Gf中的顶点就是原图G中的顶点。残余网络Gf中的边可以由以下组成：
@@ -170,8 +180,9 @@ func (a *FordFulkerson) MaxFlow(graph *Graph, src_id, dst_id int) ([][]int, erro
 *
 * 性能：时间复杂度 O(V+E)
 *
+*
+* 计算残余网络
  */
-//计算残余网络
 func (a *FordFulkerson) getResidulalNetwork(graph *Graph, flow [][]int) (*Graph, error) {
 
 	if graph == nil {

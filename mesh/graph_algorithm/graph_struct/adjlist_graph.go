@@ -1,8 +1,8 @@
 /*
- * @Description: 算法导论22章22.1节 图的邻接表表示
+ * @Description: 第22章22.1节 图的邻接表表示法
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-18 10:29:08
- * @LastEditTime: 2020-03-06 11:26:44
+ * @LastEditTime: 2020-03-14 11:34:30
  * @LastEditors:
  */
 package GraphStruct
@@ -131,11 +131,11 @@ func (a *ADJListGraph) VertexEdgeTuples(id int) ([]*Tuple, error) {
 	return result, nil
 }
 
-//!has_edge:返回图中指定顶点之间是否存在边
 /*!
-* \param id_from: 第一个顶点的`id`
-* \param id_to: 第二个顶点的`id`
-* \return  :第一个顶点和第二个顶点之间是否存在边
+* @description:顶点之间是否存在边
+* @param id_from: 第一个顶点的`id`
+* @param id_to: 第二个顶点的`id`
+* @return  :第一个顶点和第二个顶点之间是否存在边
 *
 * - 当`id_from`与`id_to`无效时，抛出异常
 * >这里的无效值得是`id_from`、`id_to`不在区间`[0,N)`之间

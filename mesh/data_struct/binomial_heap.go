@@ -21,15 +21,16 @@
 	5、如果不对斐波那契堆使用DecreaseKey和Delete操作，则堆中的每棵树和二项堆是一样的
 		斐波那契堆中多了cut和cascading_cut操作，而二项堆中对于key比较小的节点会向上冒泡
 
-	过程					二项堆(最坏情况)             斐波那契堆(平摊)
-------------------------------------------------------------------------
-	MakeHeap				Θ(1)						Θ(1)
-	Insert					Ω(lgn)						Θ(1)
-	Minimum					Ω(lgn)						Θ(1)
-	ExtracMin				Θ(lgn)						Ο(lgn)
-	Union					Θ(lgn)						Θ(1)
-	DecreaseKey				Θ(lgn)						Θ(1)
-	Delete					Θ(lgn)						Ο(lgn)
+	算法分析中O(n)， Θ(n)，Ω(n)分别来描述算法在最差情况，平均情况，最好情况时的执行效率
+	过程			二叉堆(最坏情况)		   二项堆(最坏情况)             斐波那契堆(平摊)
+-------------------------------------------------------------------------------------
+	MakeHeap		Θ(1)            		Θ(1)						Θ(1)
+	Insert			Θ(lgn)					Ω(lgn)						Θ(1)
+	Minimum			Θ(1)					Ω(lgn)						Θ(1)
+	ExtracMin		Θ(lgn)					Θ(lgn)						Ο(lgn)
+	Union			Θ(n)					Θ(lgn)						Θ(1)
+	DecreaseKey		Θ(lgn)					Θ(lgn)						Θ(1)
+	Delete			Θ(lgn)					Θ(lgn)						Ο(lgn)
 
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-03-05 11:40:09
@@ -177,7 +178,7 @@ func (heap *BinomialHeap) GetLeftSibling(node *BinomialHeapNode) *BinomialHeapNo
 
 /**
  * @description: 将堆中包含最小关键字的节点删除
-	删除当前的root节点，将root节点的子节点都变为堆的根节点，然后调整对状态，设置新的root节点
+	删除当前的root节点，将root节点的子节点都变为堆的根节点，然后调整堆状态，设置新的root节点
  * @param {type}
  * @return:
 */

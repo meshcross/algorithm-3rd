@@ -1,8 +1,8 @@
 /*
- * @Description: 第26章 最大流 26.4 推送重贴标签算法 FlowVertex
+ * @Description: 推送重贴标签算法图的顶点 FlowVertex
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-18 10:30:56
- * @LastEditTime: 2020-03-12 15:27:18
+ * @LastEditTime: 2020-03-13 22:27:11
  * @LastEditors:
  */
 package GraphVertex
@@ -21,9 +21,8 @@ type IFlowVertex interface {
 	SetParent(v IVertex)
 }
 
-//!FlowVertex：推送-重贴标签算法图的顶点，算法导论26章26.4节
 /*!
-*
+* 推送-重贴标签算法图的顶点
 * FlowVertex 是 Vertex的子类。它比Vertex多了一个`int h` 成员变量。其中：
 *
 * - `KType key`：表示顶点的超额流量

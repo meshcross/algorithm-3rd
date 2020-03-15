@@ -2,7 +2,7 @@
  * @Description: 算法导论22章22.1节 图
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-18 10:28:31
- * @LastEditTime: 2020-03-06 11:35:41
+ * @LastEditTime: 2020-03-15 15:24:40
  * @LastEditors:
  */
 package GraphStruct
@@ -20,7 +20,7 @@ import (
 *
 * - `matrix`：图的矩阵表示
 * - `adjList`：图的邻接表表示
-* - `vertexes`：顶点集合，其元素类型为指向顶点的强引用
+* - `vertexes`：顶点集合，其元素类型顶点
 * - `next_empty_vertex`：顶点集合中，下一个为空的位置，它用于添加顶点。
 
 * 图支持插入、修改顶点操作，插入、修改边操作（由图的矩阵以及图的邻接表来代理），以及返回边、返回权重（由图的矩阵以及图的邻接表来代理）。
@@ -38,9 +38,35 @@ type Graph struct {
 	VertexCreator     VertexCreatorFunc
 }
 
-func NewGraph(invalidWeight int, n int, creator VertexCreatorFunc) *Graph {
-	matrix := NewMatrixGraph(invalidWeight, n)
-	adjList := NewADJListGraph(n)
+func NewGraphUseMatrix(invalidWeight int, n int, creator VertexCreatorFunc) *Graph {
+	return NewGraph(invalidWeight, n, creator, GRAPH_REPRESENTION_MATRIX)
+}
+func NewGraphUserAjd(n int, creator VertexCreatorFunc) *Graph {
+	return NewGraph(0, n, creator, GRAPH_REPRESENTION_ADJ)
+}
+
+/**
+ * @description: 构造一个新的图，图只需要一个表示法，矩阵表示法或者邻接链表表示法
+ * @param invalidWeight 输入一个值，用于表示非法的权重，对于不同的应用非法权重是不一样的，比如有的是unlimit，有的是0，有的是-1
+ * @param n 节点数
+ * @param creator 节点的创建函数
+ * @param representation 图的表示法
+ * @return:新构建的图的指针
+ */
+func NewGraph(invalidWeight int, n int, creator VertexCreatorFunc, representation ...string) *Graph {
+	//默认使用矩阵表示法
+	method := GRAPH_REPRESENTION_MATRIX
+	if len(representation) > 0 {
+		method = representation[0]
+	}
+	var matrix *MatrixGraph = nil
+	var adjList *ADJListGraph = nil
+	if method == GRAPH_REPRESENTION_MATRIX {
+		matrix = NewMatrixGraph(invalidWeight, n)
+	} else {
+		adjList = NewADJListGraph(n)
+	}
+
 	vers := make([]IVertex, n)
 	return &Graph{next_empty_vertex: 0, Matrix: matrix, _N: n, AdjList: adjList, Vertexes: vers, VertexCreator: creator}
 }
@@ -126,8 +152,11 @@ func (a *Graph) AddEdge(edge_tuple *Tuple) error {
 	if wt == a.Matrix.InvalidWeight() {
 		return errors.New("invalid weight")
 	}
-	a.Matrix.AddEdge(edge_tuple)
-	a.AdjList.AddEdge(edge_tuple)
+	if a.Matrix != nil {
+		a.Matrix.AddEdge(edge_tuple)
+	} else if a.AdjList != nil {
+		a.AdjList.AddEdge(edge_tuple)
+	}
 	return nil
 }
 
@@ -162,8 +191,11 @@ func (a *Graph) AdjustEdge(id1, id2, wt int) error {
 		return errors.New("adjust edge error: vertex of id does not exist.")
 	}
 
-	a.Matrix.AdjustEdge(id1, id2, wt)
-	a.AdjList.AdjustEdge(id1, id2, wt)
+	if a.Matrix != nil {
+		a.Matrix.AdjustEdge(id1, id2, wt)
+	} else if a.AdjList != nil {
+		a.AdjList.AdjustEdge(id1, id2, wt)
+	}
 	return nil
 }
 
@@ -174,18 +206,17 @@ func (a *Graph) AdjustEdge(id1, id2, wt int) error {
 * 要求图的矩阵和图的邻接表都返回同样的结果
  */
 func (a *Graph) EdgeTuples() []*Tuple {
-	edges1 := a.Matrix.EdgeTuples()
-	edges2 := a.AdjList.EdgeTuples()
+	var edges []*Tuple = nil
 
-	wapper1 := NewTupleWapper(edges1, TupleCompareFunc_Less)
-	wapper2 := NewTupleWapper(edges2, TupleCompareFunc_Less)
-	sort.Sort(wapper1)
-	sort.Sort(wapper2)
+	if a.Matrix != nil {
+		edges = a.Matrix.EdgeTuples()
+	} else if a.AdjList != nil {
+		edges = a.AdjList.EdgeTuples()
+	}
+	wapper := NewTupleWapper(edges, TupleCompareFunc_Less)
+	sort.Sort(wapper)
 
-	// if edges1 != edges2 {
-	// 	return nil, errors.New("error")
-	// }
-	return edges1
+	return edges
 }
 
 /*!
@@ -204,19 +235,20 @@ func (a *Graph) VertexEdgeTuples(id int) ([]*Tuple, error) {
 		return nil, errors.New("vertex_edge_tuples error: vertex of id does not exist.")
 	}
 
-	edges1, _ := a.Matrix.VertexEdgeTuples(id)
-	edges2, _ := a.AdjList.VertexEdgeTuples(id)
+	var edges []*Tuple = nil
+
+	if a.Matrix != nil {
+		edges, _ = a.Matrix.VertexEdgeTuples(id)
+	} else if a.AdjList != nil {
+		edges, _ = a.AdjList.VertexEdgeTuples(id)
+	}
+
 	compare := TupleCompareFunc_Less
 
-	wapper1 := NewTupleWapper(edges1, compare)
-	wapper2 := NewTupleWapper(edges2, compare)
-	sort.Sort(wapper1)
-	sort.Sort(wapper2)
+	wapper := NewTupleWapper(edges, compare)
+	sort.Sort(wapper)
 
-	// if edges1 != edges2 {
-	// 	return nil, errors.New("error")
-	// }
-	return edges1, nil
+	return edges, nil
 }
 
 /*!
@@ -235,13 +267,12 @@ func (a *Graph) HasEdge(id_from, id_to int) (bool, error) {
 		return false, errors.New("has edge error: vertex of id does not exist.")
 	}
 
-	m_has, _ := a.Matrix.HasEdge(id_from, id_to)
-	a_has, _ := a.AdjList.HasEdge(id_from, id_to)
-
-	if m_has != a_has {
-		return false, errors.New("error")
+	if a.Matrix != nil {
+		return a.Matrix.HasEdge(id_from, id_to)
+	} else if a.AdjList != nil {
+		return a.AdjList.HasEdge(id_from, id_to)
 	}
-	return a.Matrix.HasEdge(id_from, id_to)
+	return false, nil
 }
 
 /*!
@@ -260,17 +291,17 @@ func (a *Graph) Weight(id_from, id_to int) (int, error) {
 		return -1, errors.New("edge weight error: vertex of id does not exist.")
 	}
 
-	m_wt, _ := a.Matrix.Weight(id_from, id_to)
-	a_wt, _ := a.AdjList.Weight(id_from, id_to)
-	if m_wt != a_wt {
-		return -1, errors.New("error")
+	if a.Matrix != nil {
+		return a.Matrix.Weight(id_from, id_to)
+	} else if a.AdjList != nil {
+		return a.AdjList.Weight(id_from, id_to)
 	}
-	return m_wt, nil
+	return 0, nil
 }
 
 /*!
 * @description:返回图的一个翻转镜像
-* @return  :图的一个镜像的一个强引用
+* @return  :图的一个镜像
 *
 * 图的一个镜像也是一个图，它与原图有以下关系：
 *

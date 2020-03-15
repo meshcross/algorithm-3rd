@@ -1,33 +1,12 @@
-package MinimumSpanningTree
+/*
+ * @Description: 第23章23.2节 最小生成树的Kruskal算法  注意：G是无环的，且连通所有节点
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-10 22:18:45
+ * @LastEditTime: 2020-03-14 12:40:43
+ * @LastEditors:
 
-import (
-	"errors"
-	"sort"
 
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
-
-	// . "github.com/meshcross/algorithm-3rd/mesh/GraphAlgorithm/graph_struct/graph_vertex"
-	. "github.com/meshcross/algorithm-3rd/mesh/set_algorithm"
-)
-
-type KruskalMST struct {
-}
-
-func NewKruskalMST() *KruskalMST {
-	return &KruskalMST{}
-}
-
-type KruskalMSTActionFunc func(v, id int)
-
-//!kruskal：最小生成树的Kruskal算法，算法导论23章23.2节
-/*!
-* \param graph:图
-* \param pre_action:一个可调用对象，在每次从最小优先级队列中弹出最小顶点时立即调用，调用参数为该顶点的`id`。默认为空操作，即不进行任何操作
-* \param post_action:一个可调用对象，在每次从最小优先级队列中弹出最小顶点并处理完它的边时立即调用，调用参数为该顶点的`id`。默认为空操作，即不进行任何操作
-* \return: 最小生成树的权重
-*
-* ## 最小生成树
+ * ## 最小生成树
 *
 * 最小生成树：对于一个连通无向图G=(V,E)，对于每一条边(u,v)属于E都赋予了一个权重w(u,v)。我们希望找出一个无环子集T，其中T为E的子集，使得所有的顶点V位于T中，
 * 同时T具有最小的权重。由于T是无环的，且连通所有结点因此T必然是一棵树。我们称这样的树为生成树。称从G中求取该生成树的问题为最小生成树问题。
@@ -44,6 +23,36 @@ type KruskalMSTActionFunc func(v, id int)
 * 在所有连接森林中两棵不同树的边里面，找到权重最小的边(u,v)。
 * Kruskal算法使用一个不相交集合数据结构来维护几个互不相交的元素集合。每个集合代表当前森林中的一棵树
 *
+
+*/
+package MinimumSpanningTree
+
+import (
+	"errors"
+	"sort"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
+	. "github.com/meshcross/algorithm-3rd/mesh/set_algorithm"
+)
+
+type KruskalMST struct {
+}
+
+func NewKruskalMST() *KruskalMST {
+	return &KruskalMST{}
+}
+
+type KruskalMSTActionFunc func(v, id int)
+
+/*
+* @description:Kruskal算法
+* @param graph:图
+* @param pre_action:在每次从最小优先级队列中弹出最小顶点时立即调用，回调函数
+* @param post_action:在每次从最小优先级队列中弹出最小顶点并处理完它的边时立即调用，回调函数
+* @return: 最小生成树的权重,以及最小生成树的所有边
+*
+
 * ### 算法步骤
 *
 * - 初始化：将集合A置为空；对G中的每一个结点v,以它为根构造一棵单根树
@@ -57,11 +66,11 @@ type KruskalMSTActionFunc func(v, id int)
 *
 * Kruskal算法运行时间依赖于不相交集合数据结构的实现方式。如果采用算法导论21.3节讨论的不相交集合森林实现（也是我在src/set_algorithms/disjoint_set中实现的），
 * 则Kruskal算法的时间为 O(ElgV)
+*
  */
-
-func (a *KruskalMST) Generate(graph *Graph, pre_action, post_action KruskalMSTActionFunc) (int, error) {
+func (a *KruskalMST) Generate(graph *Graph, pre_action, post_action KruskalMSTActionFunc) (int, []*Tuple, error) {
 	if graph == nil {
-		return 0, errors.New("kruskal error: graph must not be nil!")
+		return 0, nil, errors.New("kruskal error: graph must not be nil!")
 	}
 	sets := []*DisJointSetNode{}
 	num := graph.N()
@@ -79,6 +88,8 @@ func (a *KruskalMST) Generate(graph *Graph, pre_action, post_action KruskalMSTAc
 	//****************** 循环  ************************
 	weight := 0
 	edges := graph.EdgeTuples()
+	new_edges := []*Tuple{}
+
 	//需要将边按照权重排序
 
 	sorter := NewTupleWapper(edges, TupleCompareFunc_Less)
@@ -103,6 +114,7 @@ func (a *KruskalMST) Generate(graph *Graph, pre_action, post_action KruskalMSTAc
 				pre_action(from_id, to_id)
 			}
 
+			new_edges = append(new_edges, edge)
 			UnionSet(from_vertex_set_node, to_vertex_set_node)
 			weight += edge_weight
 			if post_action != nil {
@@ -110,6 +122,6 @@ func (a *KruskalMST) Generate(graph *Graph, pre_action, post_action KruskalMSTAc
 			}
 		}
 	}
-	return weight, nil
+	return weight, new_edges, nil
 
 }

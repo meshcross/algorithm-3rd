@@ -1,27 +1,11 @@
-package BasicGraph
+/*
+ * @Description: 第22章22.2节 图的广度优先搜索
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-18 10:22:24
+ * @LastEditTime: 2020-03-14 11:40:02
+ * @LastEditors:
 
-import (
-	"errors"
 
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
-)
-
-//!breadth_first_search：图的 广度优先搜索，算法导论22章22.2节
-/*!
-* \param graph:指向图的强引用，必须非空。若为空则抛出异常
-* \param source_id：广度优先搜索的源点`id`，必须有效。若无效则抛出异常
-* \param pre_action:一个可调用对象，在每次发现一个顶点时调用，调用参数为该顶点的`id`。默认为空操作，即不进行任何操作
-* \param post_action:一个可调用对象，在每次对一个顶点搜索完成时调用，调用参数为该顶点的`id`。默认为空操作，即不进行任何操作
-* \return:void
-*
-* `source_id`在以下情况下无效：
-*
-* - `source_id`不在区间`[0,N)`之间时，`source_id`无效
-* - `graph`中不存在某个顶点的`id`等于`source_id`时，`source_id`无效
-*
-*
 * 广度优先搜索：该算法维护已经发现结点和未发现结点的边界，沿着其广度方向向外扩展。每个结点有三种颜色：白色、灰色、黑色。
 * 白色结点表示未发现；灰色结点表示已发现但是未处理完成；黑色结点表示已处理完成。其中灰色结点就是边界。
 *
@@ -45,7 +29,17 @@ import (
 * 即V_pai由从源s可达的所有结点组成（包括s本身），E_pai由V_pai中去掉s之后的结点的入边组成，其中该入边的对端为结点的父结点。
 * BFS算法获取的前驱子图G_pai包含一条从源结点s到结点v的唯一简单路径，而且该路径也是图G里面从源s到v之间的一条最短路径，因此前驱子图也称为广度优先树。
 *
- */
+*/
+package BasicGraph
+
+import (
+	"errors"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
+)
+
 type GraphBFS struct {
 }
 
@@ -65,6 +59,21 @@ func (a *GraphBFS) toBFSVertex(vtx IVertex) *BFSVertex {
 	return nil
 }
 
+/*!
+* @description:图的广度优先搜索
+* @param graph:图
+* @param source_id：广度优先搜索的源点`id`，必须有效。若无效则抛出异常
+* @param pre_action:在每次发现一个顶点时调用，回调函数
+* @param post_action:在每次对一个顶点搜索完成时调用，回调函数
+* @return:error
+*
+* `source_id`在以下情况下无效：
+*
+* - `source_id`不在区间`[0,N)`之间时，`source_id`无效
+* - `graph`中不存在某个顶点的`id`等于`source_id`时，`source_id`无效
+*
+*
+ */
 func (a *GraphBFS) Search(graph *Graph, source_id int, pre_action BFSActionFunc, post_action BFSActionFunc) error {
 
 	if graph == nil {

@@ -1,68 +1,12 @@
-package AllNodePairShortestPath
+/*
+ * @Description: 第25章25.3节 所有节点对的最短路径之 johnson算法 ，扩展了一个新的节点
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-28 22:41:21
+ * @LastEditTime: 2020-03-15 13:14:25
+ * @LastEditors:
 
-import (
-	"errors"
 
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
 
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/single_source_shortest_path"
-)
-
-type JohnsonSP struct {
-}
-
-func NewJohnsonSP() *JohnsonSP {
-	return &JohnsonSP{}
-}
-
-//!graph_add_one_vertex：根据图graph生成一个新图。算法导论25章25.2节
-/*!
-* \param graph:有向图
-* \return: 一个新图
-*
-* 根据图graph生成一个新图new_graph,在原图基础上添加一个新的节点作为源节点，该节点和其他所有边相连，且边权重为0。
-* 主要用于稀疏图
-*
-* new_graph的顶点 graph的顶点加上一个新顶点s；
-* new_graph的边为graph的边加上{(s,v):v属于graph的顶点};
-* new_graph的边的权重为graph的边权重，以及 w(s,v)=0
-*
- */
-func (a *JohnsonSP) graph_add_one_vertex(graph *Graph) (*Graph, error) {
-
-	if graph == nil {
-		return nil, errors.New("graph_add_one_vertex error: graph must not be nil!")
-	}
-	num := graph.N()
-	invalid_weight := graph.Matrix.InvalidWeight()
-	new_graph := NewGraph(invalid_weight, num+1, graph.VertexCreator)
-
-	//*************  创建新图的顶点  ******************
-	for i := 0; i < num; i++ {
-		vertex := graph.Vertexes[i]
-		if vertex != nil {
-			new_graph.AddVertex(vertex.GetKey(), vertex.GetID())
-		}
-	}
-	new_graph.AddVertex(0, num) //新的顶点s，id为num，新的图多一个顶点
-
-	//**********   创建新图的边  ***********************
-	source_edges := graph.EdgeTuples()
-	// 生成边 (s,v)，s只有出的边没有入的边，且w(s,v)权重为0
-	for i := 0; i < num; i++ {
-		source_edges = append(source_edges, NewTuple(num, i, 0))
-	}
-	new_graph.AddEdges(source_edges)
-	return new_graph, nil
-}
-
-//!johnson：返回所有节点对的最短路径的johnson算法。算法导论25章25.3节
-/*!
-*
-* \param graph:有向图
-* \return: 一个n*n的矩阵(d_i_j)，其中 d_i_j 代表的是结点i到j的一条最短路径的权重
-*
 * ## 所有结点对的最短路径
 *
 * 给定一个带权重的有向图G=(V,E)，其权重函数为w:E->R，该函数将边映射到实值权重上。我们希望找到对于所有的结点对u,v属于V，找出一条从结点u
@@ -103,6 +47,72 @@ func (a *JohnsonSP) graph_add_one_vertex(graph *Graph) (*Graph, error) {
 * 对所有的结点v属于V'，我们定义h(v)=delt(s,v)。定义w'(u,v)=w(u,v)+h(u)-h(v)
 * w'(p)=w(p)+h(v_0)-h(v_k)
 *
+
+*/
+package AllNodePairShortestPath
+
+import (
+	"errors"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/single_source_shortest_path"
+)
+
+type JohnsonSP struct {
+}
+
+func NewJohnsonSP() *JohnsonSP {
+	return &JohnsonSP{}
+}
+
+/**
+* @description:根据图graph生成一个新图
+* @param graph:有向图
+* @return: 一个新图
+*
+* 根据图graph生成一个新图new_graph,在原图基础上添加一个新的节点作为源节点，该节点和其他所有边相连，且边权重为0。
+* 主要用于稀疏图
+*
+* new_graph的顶点 graph的顶点加上一个新顶点s；
+* new_graph的边为graph的边加上{(s,v):v属于graph的顶点};
+* new_graph的边的权重为graph的边权重，以及 w(s,v)=0
+*
+ */
+func (a *JohnsonSP) graph_add_one_vertex(graph *Graph) (*Graph, error) {
+
+	if graph == nil {
+		return nil, errors.New("graph_add_one_vertex error: graph must not be nil!")
+	}
+	num := graph.N()
+	invalid_weight := graph.Matrix.InvalidWeight()
+	new_graph := NewGraph(invalid_weight, num+1, graph.VertexCreator)
+
+	//*************  创建新图的顶点  ******************
+	for i := 0; i < num; i++ {
+		vertex := graph.Vertexes[i]
+		if vertex != nil {
+			new_graph.AddVertex(vertex.GetKey(), vertex.GetID())
+		}
+	}
+	new_graph.AddVertex(0, num) //新的顶点s，id为num，新的图多一个顶点
+
+	//**********   创建新图的边  ***********************
+	source_edges := graph.EdgeTuples()
+	// 生成边 (s,v)，s只有出的边没有入的边，且w(s,v)权重为0
+	for i := 0; i < num; i++ {
+		source_edges = append(source_edges, NewTuple(num, i, 0))
+	}
+	new_graph.AddEdges(source_edges)
+	return new_graph, nil
+}
+
+/**
+* @description:返回所有节点对的最短路径的johnson算法
+* @param graph:有向图
+* @return: 一个n*n的矩阵(d_i_j)，其中 d_i_j 代表的是结点i到j的一条最短路径的权重
+*
 * ### 算法步骤
 *
 * - 重赋权重：
@@ -140,7 +150,7 @@ func (a *JohnsonSP) ShortestPath(graph *Graph) ([][]int, error) {
 		return nil, errors.New("johnson error: graph has a nagative-weight circle!")
 	}
 
-	//*******************  第三阶段 bellmanFord已经获得了心的权重，H函数将new_graph的权重调整到非负  **************
+	//*******************  第三阶段 bellmanFord已经获得了新的权重，H函数将new_graph的权重调整到非负  **************
 	//创建h函数， h(v)=delt(s,v)
 	H := make([]int, numNew)
 	for i := 0; i < num; i++ {

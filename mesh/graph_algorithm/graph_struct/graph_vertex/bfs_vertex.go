@@ -1,8 +1,8 @@
 /*
- * @Description: golang algorithm
+ * @Description: 图的广度优先搜索需要使用的节点类型BFSVertex
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-18 10:30:35
- * @LastEditTime: 2020-03-13 14:03:26
+ * @LastEditTime: 2020-03-13 22:31:23
  * @LastEditors:
  */
 package GraphVertex
@@ -15,13 +15,12 @@ import (
 
 type BFSVertex struct {
 	Vertex
-	Color COLOR /*!< 顶点颜色*/
+	Color COLOR //顶点颜色
 	Deep  int
 }
 
-//!set_source：设本顶点为源点
 /*!
-*
+* @description:设本顶点为源点
 * 将本顶点设为源点要执行两个操作：
 *
 * - 将本顶点的颜色设为灰色
@@ -34,10 +33,9 @@ func (a *BFSVertex) SetSource() {
 	a.Deep = 0
 }
 
-//!set_found：发现本顶点
 /*!
-*
-* \param v_parent:父顶点的强引用
+* @description:发现本顶点
+* @param v_parent:父顶点
 *
 * 发现本顶点要执行两个操作：
 *

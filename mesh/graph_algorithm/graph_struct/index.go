@@ -1,8 +1,8 @@
 /*
- * @Description: golang algorithm
+ * @Description: 图算法中的一些公共函数
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-20 12:48:02
- * @LastEditTime: 2020-03-05 12:01:27
+ * @LastEditTime: 2020-03-14 11:42:00
  * @LastEditors:
  */
 package GraphStruct

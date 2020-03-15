@@ -1,8 +1,8 @@
 /*
- * @Description: 第22章 图的表示,SetVertex
+ * @Description: 图的结点,SetVertex
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-18 10:31:09
- * @LastEditTime: 2020-03-12 13:13:01
+ * @LastEditTime: 2020-03-13 22:32:22
  * @LastEditors:
  */
 package GraphVertex
@@ -16,7 +16,7 @@ import . "github.com/meshcross/algorithm-3rd/mesh/set_algorithm"
  */
 type SetVertex struct {
 	Vertex
-	Node *DisJointSetNode ///*!< 顶点对应的DisjointSetNode*/
+	Node *DisJointSetNode //顶点对应的DisjointSetNode
 }
 
 func NewSetVertex(k int, ids ...int) *SetVertex {

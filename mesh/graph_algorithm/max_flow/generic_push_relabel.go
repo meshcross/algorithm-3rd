@@ -1,30 +1,12 @@
-package MaxFlow
+/*
+ * @Description: 第26章26.4节 最大流的推送-重贴标签算法
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-18 10:34:05
+ * @LastEditTime: 2020-03-15 17:01:58
+ * @LastEditors:
 
-import (
-	"errors"
 
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
-	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
-
-	. "github.com/meshcross/algorithm-3rd/mesh/common"
-)
-
-/**
-* 该算法有一个缺陷，在给定的测试案例中(src_id=0,dst_id=5)，dst_id结点流量已满，部分流量需要从结点4回退的时候，
-* 会出现结点2和结点4之间反复(push和relabel)的情况，直到结点2的Height增加到比结点0还大
-* 在节点数比较多的时候，这里可能会有一些浪费
-* 而且结点4在向结点5发送流量之后，自己剩余的流量(9个)还可以发送到结点3再转到结点5，但是该算法先返回2再到4再到3，主要是为了调整Height
-* 当前的执行次序为：1-3，1-0，2-4，3-5，4-5，4-2，2-4，4-3，3-5，4-2，2-4，4-2，2-0
-**/
-//!generic_push_relabel：最大流的推送-重贴标签算法。算法导论26章26.4节
-/*!
-*
-* \param graph:指定流网络,必须非空
-* \param src_id: 流的源点
-* \param dst_id: 流的汇点
-* \return: 最大流矩阵,error
-*
-* 最大流问题：给定流网络G、一个源结点s、一个汇点t,找出值最大的一个流
+ * 最大流问题：给定流网络G、一个源结点s、一个汇点t,找出值最大的一个流
 *
 * ## generic_push_relabel 算法
 *
@@ -87,6 +69,42 @@ import (
 * - 计算 min{v.h:(u,v)属于E_f}
 * - u.h=1+ min{v.h:(u,v)属于E_f}
 *
+
+*/
+package MaxFlow
+
+import (
+	"errors"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct"
+	. "github.com/meshcross/algorithm-3rd/mesh/graph_algorithm/graph_struct/graph_vertex"
+
+	. "github.com/meshcross/algorithm-3rd/mesh/common"
+)
+
+/**
+* 该算法有一个缺陷，在给定的测试案例中(src_id=0,dst_id=5)，dst_id结点流量已满，部分流量需要从结点4回退的时候，
+* 会出现结点2和结点4之间反复(push和relabel)的情况，直到结点2的Height增加到比结点0还大
+* 在节点数比较多的时候，这里可能会有一些浪费
+* 而且结点4在向结点5发送流量之后，自己剩余的流量(9个)还可以发送到结点3再转到结点5，但是该算法先返回2再到4再到3，主要是为了调整Height
+* 当前的执行次序为：1-3，1-0，2-4，3-5，4-5，4-2，2-4，4-3，3-5，4-2，2-4，4-2，2-0
+**/
+
+type GenericPushRelabel struct {
+}
+
+func NewGenericPushRelabel() *GenericPushRelabel {
+	return &GenericPushRelabel{}
+}
+
+/*!
+* @description:最大流的推送-重贴标签算法
+* @param graph:指定流网络,必须非空
+* @param src_id: 流的源点
+* @param dst_id: 流的汇点
+* @return: 最大流矩阵,error
+*
+
 * ### 算法步骤
 *
 * - 初始化操作：
@@ -104,27 +122,20 @@ import (
 * 算法性能：时间复杂度 O(V^2 E)
 *
 *
- */
-type GenericPushRelabel struct {
-}
-
-func NewGenericPushRelabel() *GenericPushRelabel {
-	return &GenericPushRelabel{}
-}
-
+**/
 func (a *GenericPushRelabel) MaxFlow(graph *Graph, src_id, dst_id int) ([][]int, error) {
 
 	if graph == nil {
-		return nil, errors.New("generic_push_relabel MaxFlow error: graph must not be nil!")
+		return nil, errors.New("generic_push_relabel.MaxFlow error: graph must not be nil!")
 	}
 	num := graph.N()
 
 	if src_id < 0 || src_id >= num || graph.Vertexes[src_id] == nil {
-		return nil, errors.New("generic_push_relabel MaxFlow error:source id error")
+		return nil, errors.New("generic_push_relabel.MaxFlow error:src_id error")
 	}
 
 	if dst_id < 0 || dst_id >= num || graph.Vertexes[dst_id] == nil {
-		return nil, errors.New("generic_push_relabel MaxFlow error: destination id error")
+		return nil, errors.New("generic_push_relabel.MaxFlow error: dst_id error")
 	}
 
 	flow := make([][]int, num)
@@ -137,33 +148,37 @@ func (a *GenericPushRelabel) MaxFlow(graph *Graph, src_id, dst_id int) ([][]int,
 		}
 	}
 
-	a.initialize_preflow(graph, src_id, flow)
+	//初始化预流，src高度设置为N，其他节点高度为0，src的流量流向周边结点，设置相邻结点的超额流，此时周边结点(h=0)还没有流出流量
+	a.initialize_preflow(graph, src_id, &flow)
 
+OUTER:
 	for {
 		u_id := 0
 		//*********** 寻找 溢出结点 ***********
 		has_overflow := false
 
-		for _, vtx := range graph.Vertexes {
+	INNER:
+		for _, vtx := range graph.Vertexes { //此处有优化空间，理论上被Push过的节点才会出现超额流，所以应该不需要轮询所有节点，把push过的存起来即可
 			vtx_id := vtx.GetID()
 			if vtx_id == src_id || dst_id == vtx_id {
 				continue
 			}
-			//有溢出结点
+			//有溢出结点,key中存储的是超额流
 			if vtx.GetKey() > 0 {
 				has_overflow = true
 				u_id = vtx_id
-				break
+				break INNER
 			}
 		}
 
-		//如果有溢出结点
+		//如果有溢出结点，即超额流>0的节点
 		if has_overflow {
-			v_id, _ := a.min_v_at_Ef(graph, u_id, flow)
+			//找到u周边高度最小的邻接点，把流量推给它
+			v_id, _ := a.minHeightVertexInEf(graph, u_id, flow)
 			uvtx := ToIFlowVertex(graph.Vertexes[u_id])
 			vvtx := ToIFlowVertex(graph.Vertexes[v_id])
 
-			//当前节点的Height比临近节点高1，则执行push操作
+			//当前节点的Height比邻近节点高1，则执行push操作
 			if uvtx.GetHeight() > vvtx.GetHeight() {
 				a.push(graph, u_id, v_id, flow)
 			} else {
@@ -173,28 +188,34 @@ func (a *GenericPushRelabel) MaxFlow(graph *Graph, src_id, dst_id int) ([][]int,
 				a.push(graph, u_id, v_id, flow)
 			}
 		} else {
-			break
+			break OUTER
 		}
 	}
 	return flow, nil
 }
 
-//!initialize_preflow：generic_push_relabel算法的初始化操作。算法导论26章26.4节
-/*!
-*
-* \param graph:指定流网络。它必须非空，否则抛出异常
-* \param src: 流的源点，必须有效否则抛出异常
-* \param flow: 预流的引用（执行过程中会更新预流）
-* \return: void
+/**
+* @description:初始化操作
+* @param graph:流网络
+* @param src_id: 流的源点
+* @param flow: 预流的引用
+* @return: void
 *
 * 初始化操作执行下列操作：
 *
 *   - 初始化预流 flow: flow(u,v)=c(u,v)如果u=s;否则 flow(u,v)=0
 *   - 初始化高度函数 h: h(s)=|V|;h(u)=0, u属于 V-{s}
 *   - 初始化超额流量 e： e(u)=c(s,u)，u为与源s相邻的结点; e(u)=0，u为与源s不相邻的结点; e(s)初始化为所有s出发的管道之后的相反数
-* > 由顶点的`key`属性存储超额流量e
+*  由顶点的`key`属性存储超额流量e
+*
+* 主要做了以下操作：
+*	src的高度设为N，其他节点高度设置为0
+*   src的流量流出到相邻结点，更新周边结点的超额流
+*
+* 注意此处的flow，传进来以后的参数其实是一个新的二维数组，但是该数组内部的指针和外面的是一样的，
+* 所以只要不对flow做resize，内部指针位置不会变化，initialize_preflow对flow做的修改，在外部也是有效的，也可以直接传flow指针进来
  */
-func (a *GenericPushRelabel) initialize_preflow(graph *Graph, src_id int, flow [][]int) error {
+func (a *GenericPushRelabel) initialize_preflow(graph *Graph, src_id int, flow *[][]int) error {
 	if graph == nil {
 		return errors.New("initialize_preflow error: graph must not be nil!")
 	}
@@ -217,7 +238,7 @@ func (a *GenericPushRelabel) initialize_preflow(graph *Graph, src_id int, flow [
 	//************* 所有预流为0  **************
 	for i := 0; i < num; i++ {
 		for j := 0; j < num; j++ {
-			flow[i][j] = 0
+			(*flow)[i][j] = 0
 		}
 	}
 	svtx := ToIFlowVertex(graph.Vertexes[src_id])
@@ -226,23 +247,22 @@ func (a *GenericPushRelabel) initialize_preflow(graph *Graph, src_id int, flow [
 	edges, _ := graph.VertexEdgeTuples(src_id)
 	for _, edge := range edges {
 		v_id := edge.Second                //{v:(s,v)属于E}
-		c_s_v := edge.Third                // c(s,v)
-		flow[src_id][v_id] = c_s_v         //f(s,v)
-		graph.Vertexes[v_id].SetKey(c_s_v) // v.e=c(s,v)
-		svtx.SetKey(svtx.GetKey() - c_s_v)
+		c_s_v := edge.Third                //c(s,v)，即E(s,v)的权重，capacity of (s,v)
+		(*flow)[src_id][v_id] = c_s_v      //f(s,v)
+		graph.Vertexes[v_id].SetKey(c_s_v) //v.e=c(s,v),key中记录的是从s进入v的流量，此时v还没有流出，所以全部是超额流量
+		svtx.SetKey(svtx.GetKey() - c_s_v) //s结点有流出，没有流入，对于每个v，s都要减掉E(s,v)的流量
 	}
 
 	return nil
 }
 
-//!push：generic_push_relabel算法的push操作。算法导论26章26.4节
-/*!
-*
-* \param graph:指定流网络。它必须非空，否则抛出异常
-* \param u_id: 结点u的id，必须有效否则抛出异常
-* \param v_id: 结点v的id，必须有效否则抛出异常
-* \param flow: 预流的引用（执行过程中会更新预流）
-* \return: void
+/**
+* @description:push操作
+* @param graph:指定流网络。它必须非空，否则抛出异常
+* @param u_id: 结点u的id，必须有效否则抛出异常
+* @param v_id: 结点v的id，必须有效否则抛出异常
+* @param flow: 预流的引用（执行过程中会更新预流）
+* @return: void
 *
 * push操作步骤：
 *
@@ -325,28 +345,29 @@ func (a *GenericPushRelabel) push(graph *Graph, u_id, v_id int, flow [][]int) er
 	return nil
 }
 
-//!min_v_at_Ef：relabel操作中的min_v_at_Ef操作。算法导论26章26.4节
-/*!
-*
-* \param graph:指定流网络
-* \param u_id: 结点u的id
-* \param flow: 预流
-* \return: 所有边(u,v)属于E_f(残留网络G_f中的边)中，高度最小的结点v
+/**
+* @description:relabel操作中的min_v_at_Ef操作
+* @param graph:指定流网络
+* @param u_id: 结点u的id
+* @param flow: 预流
+* @return: 所有边(u,v)属于E_f(残留网络G_f中的边)中，高度最小的结点v
 *
 * 该方法扫描Ef中所有从u出发的边(u,v)，找出高度最小的结点v
 *
- */
-func (a *GenericPushRelabel) min_v_at_Ef(graph *Graph, u_id int, flow [][]int) (int, error) {
+* 即流量优先流入高度差最大的邻接点
+*
+**/
+func (a *GenericPushRelabel) minHeightVertexInEf(graph *Graph, u_id int, flow [][]int) (int, error) {
 
 	if graph == nil {
-		return -1, errors.New("min_v_at_Ef error: graph must not be nil!")
+		return -1, errors.New("minHeightVertexInEf error: graph must not be nil!")
 	}
 	num := graph.N()
 	if u_id < 0 || u_id >= num {
-		return -1, errors.New("min_v_at_Ef error:id must >=0 and <N.")
+		return -1, errors.New("minHeightVertexInEf error:id must >=0 and <N.")
 	}
 	if graph.Vertexes[u_id] == nil {
-		return -1, errors.New("min_v_at_Ef error: vertex id does not exist.")
+		return -1, errors.New("minHeightVertexInEf error: vertex id does not exist.")
 	}
 
 	Ef_v := []int{}                                // {v:(u,v)属于Ef}
@@ -382,13 +403,12 @@ func (a *GenericPushRelabel) min_v_at_Ef(graph *Graph, u_id int, flow [][]int) (
 	return v_id, nil
 }
 
-//!relabel：generic_push_relabel算法的relabel操作。算法导论26章26.4节
-/*!
-*
-* \param graph:指定流网络
-* \param u_id: 结点u的id
-* \param flow: 预流
-* \return: error
+/**
+* @description:重贴标签操作
+* @param graph:指定流网络
+* @param u_id: 结点u的id
+* @param flow: 预流
+* @return: error
 *
 * relabel 步骤：
 *
@@ -416,7 +436,7 @@ func (a *GenericPushRelabel) relabel(graph *Graph, u_id int, flow [][]int) error
 		return errors.New("relabel error:u.e must >0 !")
 	}
 
-	min_v_id, _ := a.min_v_at_Ef(graph, u_id, flow)
+	min_v_id, _ := a.minHeightVertexInEf(graph, u_id, flow)
 	if min_v_id < 0 {
 		return errors.New("relabel error: there must be edges in E_f start from u !")
 	}

@@ -1,8 +1,8 @@
 /*
- * @Description: golang algorithm
+ * @Description: 单源最短路径测试
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-26 23:01:47
- * @LastEditTime: 2020-03-05 12:05:25
+ * @LastEditTime: 2020-03-13 22:14:10
  * @LastEditors:
  */
 package SingleSourceShortestPath
@@ -18,9 +18,7 @@ import (
 )
 
 /**
- * @description:
- * @param {type}
- * @return: void
+ * @description:BellmanFord单源最短路径
  */
 func TestBellmanFord(t *testing.T) {
 	NUM := 10

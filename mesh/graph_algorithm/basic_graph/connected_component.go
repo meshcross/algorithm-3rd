@@ -2,9 +2,19 @@
  * @Description: 第21章 21.1 无向图的连通分量
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-18 10:21:23
- * @LastEditTime: 2020-03-12 12:57:23
+ * @LastEditTime: 2020-03-14 11:39:49
  * @LastEditors:
- */
+
+ 此处使用不相交集合操作来计算一个无向图的连通分量。一旦SetConnectedComponent函数与处理了该图，SameComponent
+* 函数就会回答两个顶点是否在同一个连通分量。
+*
+* connected_component算法步骤：
+*
+* - 将每个顶点v放入它自己的集合中
+* - 对每一条边(u,v)，它将包含u和v的集合进行合并
+*
+* 在处理完搜有边之后，两个顶点在相同的连通分量当且仅当与之对应的对象在相同的集合中
+*/
 package BasicGraph
 
 import (
@@ -28,6 +38,24 @@ func (a *ConnectedComponent) toSetVetex(vtx IVertex) *SetVertex {
 	return nil
 }
 
+/**
+ * @description: 图的连通分量
+ *	connected_component算法步骤：
+ * 		- 将每个顶点v放入它自己的集合中
+ * 		- 对每一条边(u,v)，它将包含u和v的集合进行合并
+ *
+ * @param graph 图
+ * @return: error
+
+	如下所示的图G(V,E)：V包含7个结点，E包含6条边，G(V,E)有两个连通分量(a,b,c,d)和(e,f,g)
+			a---------b          e---------f
+			|        /|          |
+			|      /  |          |
+			|    /    |          |
+			|  /      |          |
+			c         d          g
+
+*/
 func (a *ConnectedComponent) SetConnectedComponent(graph *Graph) error {
 	if graph == nil {
 		return errors.New("SetConnectedComponent error: graph must not be nil!")

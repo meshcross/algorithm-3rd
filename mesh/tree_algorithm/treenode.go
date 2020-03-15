@@ -2,7 +2,7 @@
  * @Description: golang algorithm
  * @Author: wangchengdg@gmail.com
  * @Date: 2020-02-10 22:20:14
- * @LastEditTime: 2020-03-13 14:04:42
+ * @LastEditTime: 2020-03-13 22:32:37
  * @LastEditors:
  */
 package TreeAlgorithm
@@ -35,13 +35,8 @@ type ITreeNode interface {
 }
 
 type BinaryTreeNode struct {
-	// _Parent *BinaryTreeNode /*!< 节点的父节点*/
-	// _LChild *BinaryTreeNode /*!< 节点的左子节点*/
-	// _RChild *BinaryTreeNode
-	// _Key    interface{}
-	// _Level  int /**第几层的节点**/
-	_Parent ITreeNode /*!< 节点的父节点*/
-	_LChild ITreeNode /*!< 节点的左子节点*/
+	_Parent ITreeNode // 节点的父节点
+	_LChild ITreeNode // 节点的左子节点
 	_RChild ITreeNode
 	_Key    interface{}
 	_Level  int /**第几层的节点**/

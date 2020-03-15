@@ -1,6 +1,12 @@
+/*
+ * @Description: 图的结点，做了一个公共实现，相当于基类，实际上各种Vertex都是遵循IVertex接口，实际使用中并没有使用类的继承
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-18 10:31:34
+ * @LastEditTime: 2020-03-13 22:29:40
+ * @LastEditors:
+ */
 package GraphVertex
 
-//!Vertex：图的顶点，算法导论22章22.1节
 /*!
 *
 * 顶点是一个结构体的模板，模板类型为它存储的数据的类型。它主要包含两个数据：

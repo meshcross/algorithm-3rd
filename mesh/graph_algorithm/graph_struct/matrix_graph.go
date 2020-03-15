@@ -1,3 +1,10 @@
+/*
+ * @Description: 图的矩阵表示法，稠密图用该方法表示
+ * @Author: wangchengdg@gmail.com
+ * @Date: 2020-02-18 10:28:51
+ * @LastEditTime: 2020-03-14 11:42:28
+ * @LastEditors:
+ */
 package GraphStruct
 
 import (
